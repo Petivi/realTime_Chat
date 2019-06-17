@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>
+    <title>Chat</title>
+</head>
+
+<body>
+    <h1>Chat Tanguy et Eric</h1>
+    <div style="width: 100%">
+        <textarea style="width: 100%" id="message" rows="4"></textarea>
+    </div>
+    <div id="affichage"></div>
+
+
+    <script>
+        var socket = io({
+            transports: ['websocket'],
+            upgrade: false
+        });
+        let message = document.getElementById('message');
+        let affichage = document.getElementById('affichage');
+
+        message.addEventListener('keyup', (e) => {
+            if (e.keyCode === 13) {
+                socket.emit('sendMessage', message.value);
+                message.value = '';
+            }
+        });
+
+
+        socket.on('event', (data) => {
+            affichage.innerHTML += '<br>' + data;
+        });
+    </script>
+
+</body>
+
+</html>
