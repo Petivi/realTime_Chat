@@ -10,11 +10,17 @@
 </head>
 
 <body>
-    <h1>Chat Tanguy et Eric</h1>
-    <div style="width: 100%">
-        <textarea style="width: 100%" id="message" rows="4"></textarea>
+    <h1>Secret Chat</h1>
+    <div style="display: none" id="contentMessage">
+        <textarea style="width: 100%;" id="message" rows="4"></textarea>
+        <button id="btn-send-msg">Envoyer</button>
+        <div id="affichage"></div>
     </div>
-    <div id="affichage"></div>
+    <div id="contentPseudo">
+        <label for="pseudo">Pseudo</label>
+        <input type="text" id="pseudo" name="pseudo">
+        <button id="btn-valider-pseudo">Valider</button>
+    </div>
 
 
     <script>
@@ -22,20 +28,48 @@
             transports: ['websocket'],
             upgrade: false
         });
-        let message = document.getElementById('message');
-        let affichage = document.getElementById('affichage');
+        var btnValiderPseudo = document.getElementById('btn-valider-pseudo');
+        var pseudo = document.getElementById('pseudo');
+        var contentPseudo = document.getElementById('contentPseudo');
+        var message = document.getElementById('message');
+        var affichage = document.getElementById('affichage');
+        var contentMessage = document.getElementById('contentMessage');
+        var btnSendMsg = document.getElementById('btn-send-msg');
 
-        message.addEventListener('keyup', (e) => {
+        btnValiderPseudo.addEventListener('click', (e) => {
+            chosePseudo();
+        });
+
+        pseudo.addEventListener('keyup', (e) => {
             if (e.keyCode === 13) {
-                socket.emit('sendMessage', message.value);
-                message.value = '';
+                chosePseudo();
             }
         });
 
+        btnSendMsg.addEventListener('click', (e) => {
+            sendMessage();
+        });
+
+        message.addEventListener('keyup', (e) => {
+            if (e.keyCode === 13) {
+                sendMessage();
+            }
+        });
 
         socket.on('event', (data) => {
-            affichage.innerHTML += '<br>' + data;
+            affichage.innerHTML += '<br><strong>' + data.pseudo + '</strong> : ' + data.text;
         });
+
+        function chosePseudo() {
+            socket.emit('chosePseudo', pseudo.value);
+            contentPseudo.style.display = 'none';
+            contentMessage.style.display = 'block';
+        }
+
+        function sendMessage() {
+            socket.emit('sendMessage', message.value);
+            message.value = '';
+        }
     </script>
 
 </body>
