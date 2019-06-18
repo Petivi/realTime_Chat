@@ -14,12 +14,13 @@ io.on('connection', client => {
         client.pseudo = data.pseudo;
         client.room = data.room;
 
-        client.join(client.room);
-        io.to(client.id).emit('roomJoin', { room: client.room, text: "You joined the room !" });
-        io.to(client.room).emit('userJoin', {text:client.pseudo + " joined the room !"});
+        client.join(client.room); // on rejoint / créé la room choisie
+        io.to(client.id).emit('roomJoin', { room: client.room, text: "You joined the room !" }); // affichage pour le sender
+        client.to(client.room).emit('userJoin', {text:client.pseudo + " joined the room !"}); // affichage pour les autres
     });
 
     client.on('sendMessage', data => {
-        io.to(client.room).emit('event', { pseudo: client.pseudo, text: data });
+        io.to(client.id).emit('event', { pseudo: '<span class="colorSender">'+client.pseudo+'</span>', text: data }); // affichage pour le sender
+        client.to(client.room).emit('event', { pseudo: client.pseudo, text: data }); // affichage pour les autres
     });
 });

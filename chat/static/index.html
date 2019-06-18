@@ -7,6 +7,11 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>
     <title>Chat</title>
+    <style media="screen">
+      .colorSender{
+        color: red;
+      }
+    </style>
 </head>
 
 <body id="body">
@@ -48,6 +53,7 @@
         var roomNameTitle = document.getElementById('roomNameTitle');
         var contentMessage = document.getElementById('contentMessage');
         var btnSendMsg = document.getElementById('btn-send-msg');
+        var classSender = "";
 
         btnValiderConnection.addEventListener('click', (e) => {
           if(pseudo.value != "" && room.value != ""){
@@ -78,16 +84,16 @@
         });
 
         socket.on('event', (data) => {
-            affichage.innerHTML += '<br><strong>' + data.pseudo + '</strong> : ' + data.text;
+            affichage.innerHTML += '<br><strong>' + data.pseudo + '</strong> : ' + data.text; // message
         });
 
         socket.on('roomJoin', (data) => {
-            roomNameTitle.innerHTML = '<strong> Room Name : ' + data.room + '</strong>';
-            affichage.innerHTML += '<br><strong>' + data.text + '</strong>';
+            roomNameTitle.innerHTML = '<strong> Room Name : ' + data.room + '</strong>'; // affichage nom room
+            affichage.innerHTML += '<br><strong>' + data.text + '</strong>'; // affichage message room rejointe
         });
 
         socket.on('userJoin', (data) => {
-            affichage.innerHTML += '<br><strong>' + data.text + '</strong>';
+            affichage.innerHTML += '<br><strong>' + data.text + '</strong>'; // affichage user join room
         });
 
         function connectToRoom() {
