@@ -43,13 +43,13 @@
 
         btnValiderPseudo.addEventListener('click', (e) => {
           if(pseudo.value != ""){
-            choosePseudo();
+            connectToRoom();
           }
         });
 
         pseudo.addEventListener('keyup', (e) => {
             if (e.keyCode === 13 && pseudo.value != "") {
-                choosePseudo();
+                connectToRoom();
             }
         });
 
@@ -67,7 +67,7 @@
             affichage.innerHTML += '<br><strong>' + data.pseudo + '</strong> : ' + data.text;
         });
 
-        function choosePseudo() {
+        function connectToRoom() {
             socket.emit('choosePseudo', pseudo.value);
             contentPseudo.style.display = 'none';
             contentMessage.style.display = 'block';
