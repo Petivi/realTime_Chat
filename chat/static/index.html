@@ -26,16 +26,24 @@
                 <button id="btn-send-msg">Envoyer</button>
                 <div id="affichage"></div>
             </div>
-            <div id="contentPseudo">
+            <div id="divInfosUser">
+              <div id="contentPseudo">
                 <label for="pseudo">Pseudo *</label>
                 <input type="text" id="pseudo" name="pseudo">
-            </div>
-            <div id="contentRoomName" style="margin:1em 0 1em 0;">
+              </div>
+              <div id="contentRoomName" style="margin:1em 0 1em 0;">
                 <label for="room">Room *</label>
                 <input type="text" id="room" name="room">
-            </div>
-            <div id="contentBtnValider">
+              </div>
+              <div id="contentBtnValider">
                 <button id="btn-valider-connection">Valider</button>
+              </div>
+            </div>
+            <div id="divInfosRooms">
+              <div id="contentListRooms">
+                <h5>Liste des rooms actives</h5>
+                <ul id="listRooms"></ul>
+              </div>
             </div>
         </div>
     </div>
@@ -48,15 +56,19 @@
         var btnValiderConnection = document.getElementById('btn-valider-connection');
         var pseudo = document.getElementById('pseudo');
         var room = document.getElementById('room');
-        var contentPseudo = document.getElementById('contentPseudo');
-        var contentRoomName = document.getElementById('contentRoomName');
-        var contentBtnValider = document.getElementById('contentBtnValider');
+        // var contentPseudo = document.getElementById('contentPseudo');
+        // var contentRoomName = document.getElementById('contentRoomName');
+        // var contentBtnValider = document.getElementById('contentBtnValider');
+        // var contentListRooms = document.getElementById('contentListRooms');
+        var divInfosRooms = document.getElementById('divInfosRooms');
+        var divInfosUser = document.getElementById('divInfosUser');
         var message = document.getElementById('message');
         var affichage = document.getElementById('affichage');
         var roomNameTitle = document.getElementById('roomNameTitle');
         var contentMessage = document.getElementById('contentMessage');
         var btnSendMsg = document.getElementById('btn-send-msg');
         var classSender = "";
+        var listRooms = document.getElementById('listRooms');
 
         btnValiderConnection.addEventListener('click', (e) => {
             if (pseudo.value != "" && room.value != "") {
@@ -99,15 +111,23 @@
             affichage.innerHTML += '<br><strong>' + data.text + '</strong>'; // affichage user join room
         });
 
-        socket.on('listUser', (data) => {
-            affichage.innerHTML += '<br><strong>' + data.text + '</strong>'; // affichage user join room
+        socket.on('roomsInfo', (data) => {
+          data.forEach(function(tab) {
+            var li = document.createElement('li');
+            li.innerHTML = tab.name + " ("+tab.users.length+")";
+            // équivalent à li.innerText = message
+            listRooms.appendChild(li);
+          });
         });
 
         function connectToRoom() {
             socket.emit('connectToRoom', { pseudo: pseudo.value, room: room.value });
-            contentPseudo.style.display = 'none';
-            contentRoomName.style.display = 'none';
-            contentBtnValider.style.display = 'none';
+            // contentPseudo.style.display = 'none';
+            // contentRoomName.style.display = 'none';
+            // contentBtnValider.style.display = 'none';
+            // contentListRooms.style.display = 'none';
+            divInfosRooms.style.display = 'none';
+            divInfosUser.style.display = 'none';
             contentMessage.style.display = 'block';
         }
 

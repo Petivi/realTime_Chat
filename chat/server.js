@@ -12,6 +12,7 @@ var io = socketio(server);
 var ttRoom = [];
 
 io.on('connection', client => {
+    client.emit('roomsInfo', ttRoom);
     client.on('connectToRoom', data => {
         client.pseudo = data.pseudo;
         client.room = data.room;
