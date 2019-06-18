@@ -9,7 +9,7 @@
     <title>Chat</title>
 </head>
 
-<body>
+<body id="body">
     <h1>Secret Chat</h1>
     <div style="display: none" id="contentMessage">
         <textarea style="width: 100%;" id="message" rows="4"></textarea>
@@ -19,12 +19,13 @@
     <div id="contentPseudo">
         <label for="pseudo">Pseudo *</label>
         <input type="text" id="pseudo" name="pseudo">
-        <button id="btn-valider-pseudo">Valider</button>
     </div>
     <div id="contentRoomName" style="margin:1em 0 1em 0;">
-        <label for="room">Room</label>
-        <input required type="text" id="room" name="room">
-        <button id="btn-valider-room">Valider</button>
+        <label for="room">Room *</label>
+        <input type="text" id="room" name="room">
+    </div>
+    <div id="contentBtnValider">
+      <button id="btn-valider-connection">Valider</button>
     </div>
 
 
@@ -33,22 +34,27 @@
             transports: ['websocket'],
             upgrade: false
         });
-        var btnValiderPseudo = document.getElementById('btn-valider-pseudo');
+        var body = document.getElementById('body');
+        var btnValiderConnection = document.getElementById('btn-valider-connection');
         var pseudo = document.getElementById('pseudo');
+        var room = document.getElementById('room');
         var contentPseudo = document.getElementById('contentPseudo');
+        var contentRoomName = document.getElementById('contentRoomName');
+        var contentBtnValider = document.getElementById('contentBtnValider');
         var message = document.getElementById('message');
         var affichage = document.getElementById('affichage');
         var contentMessage = document.getElementById('contentMessage');
         var btnSendMsg = document.getElementById('btn-send-msg');
 
-        btnValiderPseudo.addEventListener('click', (e) => {
-          if(pseudo.value != ""){
+        btnValiderConnection.addEventListener('click', (e) => {
+          console.log(room.value);
+          if(pseudo.value != "" && room.value != ""){
             connectToRoom();
           }
         });
 
-        pseudo.addEventListener('keyup', (e) => {
-            if (e.keyCode === 13 && pseudo.value != "") {
+        body.addEventListener('keyup', (e) => {
+            if (e.keyCode === 13 && pseudo.value != "" && room.value != "") {
                 connectToRoom();
             }
         });
@@ -68,8 +74,10 @@
         });
 
         function connectToRoom() {
-            socket.emit('choosePseudo', pseudo.value);
+            socket.emit('connectToRoom', {pseudo:pseudo.value,room:room.value});
             contentPseudo.style.display = 'none';
+            contentRoomName.style.display = 'none';
+            contentBtnValider.style.display = 'none';
             contentMessage.style.display = 'block';
         }
 

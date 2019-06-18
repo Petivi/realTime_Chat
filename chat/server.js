@@ -10,8 +10,11 @@ var server = app.listen(3000, () => {
 var io = socketio(server);
 
 io.on('connection', client => {
-    client.on('choosePseudo', data => {
-        client.pseudo = data;
+    client.on('connectToRoom', data => {
+        client.pseudo = data.pseudo;
+        client.room = data.room;
+
+        client.join(client.room);
     });
 
     client.on('sendMessage', data => {
