@@ -1,3 +1,11 @@
 .colorSender {
     color: red;
 }
+
+.customFieldset{
+  border-width: 2px;
+  border-style: groove;
+  border-color: threedface;
+  margin-top:2em;
+  padding: 5px;
+}

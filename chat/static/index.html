@@ -22,9 +22,21 @@
                 <h2 id="roomNameTitle"></h2>
             </div>
             <div style="display: none" id="contentMessage">
-                <textarea style="width: 100%;" id="message" rows="4"></textarea>
-                <button id="btn-send-msg">Envoyer</button>
-                <div id="affichage"></div>
+              <textarea style="width: 100%;" id="message" rows="4"></textarea>
+              <button id="btn-send-msg">Envoyer</button>
+              <div class="row">
+                <div class="col-sm-9">
+                  <fieldset class="customFieldset">
+                    <div id="affichage"></div>
+                  </fieldset>
+                </div>
+                <div class="col-sm-3">
+                  <fieldset class="customFieldset">
+                    <h5>Liste des utilisateurs :</h5>
+                    <ul id="listUsers"></ul>
+                  </fieldset>
+                </div>
+              </div>
             </div>
             <div id="divInfosUser">
               <div id="contentPseudo">
@@ -69,6 +81,7 @@
         var btnSendMsg = document.getElementById('btn-send-msg');
         var classSender = "";
         var listRooms = document.getElementById('listRooms');
+        var listUsers = document.getElementById('listUsers');
 
         btnValiderConnection.addEventListener('click', (e) => {
             if (pseudo.value != "" && room.value != "") {
@@ -111,11 +124,19 @@
             affichage.innerHTML += '<br><strong>' + data.text + '</strong>'; // affichage user join room
         });
 
+        socket.on('updateListUsers', (data) => {
+            listUsers.innerHTML = "";
+            data.forEach(function(tab) {
+              var li = document.createElement('li');
+              li.innerHTML = tab;
+              listUsers.appendChild(li);
+            });
+        });
+
         socket.on('roomsInfo', (data) => {
           data.forEach(function(tab) {
             var li = document.createElement('li');
             li.innerHTML = tab.name + " ("+tab.users.length+")";
-            // équivalent à li.innerText = message
             listRooms.appendChild(li);
           });
         });
