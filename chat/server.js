@@ -11,6 +11,7 @@ var io = socketio(server);
 
 io.on('connection', client => {
     client.on('connectToRoom', data => {
+      console.log('oui');
         client.pseudo = data.pseudo;
         client.room = data.room;
 

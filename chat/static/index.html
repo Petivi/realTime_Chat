@@ -37,7 +37,6 @@
             transports: ['websocket'],
             upgrade: false
         });
-        var body = document.getElementById('body');
         var btnValiderConnection = document.getElementById('btn-valider-connection');
         var pseudo = document.getElementById('pseudo');
         var room = document.getElementById('room');
@@ -56,7 +55,13 @@
           }
         });
 
-        body.addEventListener('keyup', (e) => {
+        room.addEventListener('keyup', (e) => {
+            if (e.keyCode === 13 && pseudo.value != "" && room.value != "") {
+                connectToRoom();
+            }
+        });
+
+        pseudo.addEventListener('keyup', (e) => {
             if (e.keyCode === 13 && pseudo.value != "" && room.value != "") {
                 connectToRoom();
             }
