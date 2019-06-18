@@ -10,7 +10,7 @@ var server = app.listen(3000, () => {
 var io = socketio(server);
 
 io.on('connection', client => {
-    client.on('chosePseudo', data => {
+    client.on('choosePseudo', data => {
         client.pseudo = data;
     });
 
