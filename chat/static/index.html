@@ -11,6 +11,9 @@
 
 <body id="body">
     <h1>Secret Chat</h1>
+    <div class="">
+      <h2 id="roomNameTitle"></h2>
+    </div>
     <div style="display: none" id="contentMessage">
         <textarea style="width: 100%;" id="message" rows="4"></textarea>
         <button id="btn-send-msg">Envoyer</button>
@@ -43,11 +46,11 @@
         var contentBtnValider = document.getElementById('contentBtnValider');
         var message = document.getElementById('message');
         var affichage = document.getElementById('affichage');
+        var roomNameTitle = document.getElementById('roomNameTitle');
         var contentMessage = document.getElementById('contentMessage');
         var btnSendMsg = document.getElementById('btn-send-msg');
 
         btnValiderConnection.addEventListener('click', (e) => {
-          console.log(room.value);
           if(pseudo.value != "" && room.value != ""){
             connectToRoom();
           }
@@ -71,6 +74,10 @@
 
         socket.on('event', (data) => {
             affichage.innerHTML += '<br><strong>' + data.pseudo + '</strong> : ' + data.text;
+        });
+
+        socket.on('roomJoin', (data) => {
+            roomNameTitle.innerHTML += '<strong> Room Name : ' + data.room + '</strong>';
         });
 
         function connectToRoom() {
