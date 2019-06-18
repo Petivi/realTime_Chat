@@ -20,6 +20,6 @@ io.on('connection', client => {
     });
 
     client.on('sendMessage', data => {
-        io.emit('event', { pseudo: client.pseudo, text: data });
+        io.to(client.room).emit('event', { pseudo: client.pseudo, text: data });
     });
 });
