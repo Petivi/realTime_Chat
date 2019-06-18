@@ -24,3 +24,14 @@ io.on('connection', client => {
         client.to(client.room).emit('event', { pseudo: client.pseudo, text: data }); // affichage pour les autres
     });
 });
+
+
+
+/*
+CHEAT SHEET : https://socket.io/docs/emit-cheatsheet/
+
+io.to(client.id).emit()... -> pour envoyer uniquement au sender (à soi-même)
+client.to(client.room).emit()... -> pour envoyer à une room (ou plusieurs) mais pas au sender
+io.emit()... -> pour envoyer à tous le monde
+
+*/
