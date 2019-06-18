@@ -17,9 +17,14 @@
         <div id="affichage"></div>
     </div>
     <div id="contentPseudo">
-        <label for="pseudo">Pseudo</label>
+        <label for="pseudo">Pseudo *</label>
         <input type="text" id="pseudo" name="pseudo">
         <button id="btn-valider-pseudo">Valider</button>
+    </div>
+    <div id="contentRoomName" style="margin:1em 0 1em 0;">
+        <label for="room">Room</label>
+        <input required type="text" id="room" name="room">
+        <button id="btn-valider-room">Valider</button>
     </div>
 
 
@@ -37,12 +42,14 @@
         var btnSendMsg = document.getElementById('btn-send-msg');
 
         btnValiderPseudo.addEventListener('click', (e) => {
-            chosePseudo();
+          if(pseudo.value != ""){
+            choosePseudo();
+          }
         });
 
         pseudo.addEventListener('keyup', (e) => {
-            if (e.keyCode === 13) {
-                chosePseudo();
+            if (e.keyCode === 13 && pseudo.value != "") {
+                choosePseudo();
             }
         });
 
@@ -60,8 +67,8 @@
             affichage.innerHTML += '<br><strong>' + data.pseudo + '</strong> : ' + data.text;
         });
 
-        function chosePseudo() {
-            socket.emit('chosePseudo', pseudo.value);
+        function choosePseudo() {
+            socket.emit('choosePseudo', pseudo.value);
             contentPseudo.style.display = 'none';
             contentMessage.style.display = 'block';
         }
