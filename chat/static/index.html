@@ -77,7 +77,12 @@
         });
 
         socket.on('roomJoin', (data) => {
-            roomNameTitle.innerHTML += '<strong> Room Name : ' + data.room + '</strong>';
+            roomNameTitle.innerHTML = '<strong> Room Name : ' + data.room + '</strong>';
+            affichage.innerHTML += '<br><strong>' + data.text + '</strong>';
+        });
+
+        socket.on('userJoin', (data) => {
+            affichage.innerHTML += '<br><strong>' + data.text + '</strong>';
         });
 
         function connectToRoom() {

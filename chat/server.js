@@ -15,8 +15,8 @@ io.on('connection', client => {
         client.room = data.room;
 
         client.join(client.room);
-        io.emit('roomJoin', { room: client.room });
-        io.to(client.room).emit('userJoin', client.pseudo + "joined the room !");
+        io.to(client.id).emit('roomJoin', { room: client.room, text: "You joined the room !" });
+        io.to(client.room).emit('userJoin', {text:client.pseudo + " joined the room !"});
     });
 
     client.on('sendMessage', data => {
