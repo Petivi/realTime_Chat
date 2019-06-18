@@ -77,7 +77,6 @@
         });
 
         socket.on('roomJoin', (data) => {
-          console.log('oui');
             roomNameTitle.innerHTML = '<strong> Room Name : ' + data.room + '</strong>';
             affichage.innerHTML += '<br><strong>' + data.text + '</strong>';
         });
