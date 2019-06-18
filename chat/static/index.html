@@ -12,53 +12,55 @@
 </head>
 
 <body id="body">
+  <div class="container">
     <div class="row">
-        <div class="col-md-2">
-            menu
+      <div class="col-md-2">
+        menu
+      </div>
+      <div class="col">
+        <h1>Secret Chat</h1>
+        <div class="">
+          <h2 id="roomNameTitle"></h2>
         </div>
-        <div class="col">
-            <h1>Secret Chat</h1>
-            <div class="">
-                <h2 id="roomNameTitle"></h2>
+        <div style="display: none" id="contentMessage">
+          <textarea style="width: 100%;" id="message" rows="4"></textarea>
+          <button id="btn-send-msg">Envoyer</button>
+          <div class="row">
+            <div class="col-sm-9">
+              <fieldset class="customFieldset">
+                <div id="affichage"></div>
+              </fieldset>
             </div>
-            <div style="display: none" id="contentMessage">
-              <textarea style="width: 100%;" id="message" rows="4"></textarea>
-              <button id="btn-send-msg">Envoyer</button>
-              <div class="row">
-                <div class="col-sm-9">
-                  <fieldset class="customFieldset">
-                    <div id="affichage"></div>
-                  </fieldset>
-                </div>
-                <div class="col-sm-3">
-                  <fieldset class="customFieldset">
-                    <h5>Liste des utilisateurs :</h5>
-                    <ul id="listUsers"></ul>
-                  </fieldset>
-                </div>
-              </div>
+            <div class="col-sm-3">
+              <fieldset class="customFieldset">
+                <h5>Liste des utilisateurs :</h5>
+                <ul id="listUsers"></ul>
+              </fieldset>
             </div>
-            <div id="divInfosUser">
-              <div id="contentPseudo">
-                <label for="pseudo">Pseudo *</label>
-                <input type="text" id="pseudo" name="pseudo">
-              </div>
-              <div id="contentRoomName" style="margin:1em 0 1em 0;">
-                <label for="room">Room *</label>
-                <input type="text" id="room" name="room">
-              </div>
-              <div id="contentBtnValider">
-                <button id="btn-valider-connection">Valider</button>
-              </div>
-            </div>
-            <div id="divInfosRooms">
-              <div id="contentListRooms">
-                <h5>Liste des rooms actives</h5>
-                <ul id="listRooms"></ul>
-              </div>
-            </div>
+          </div>
         </div>
+        <div id="divInfosUser">
+          <div id="contentPseudo">
+            <label for="pseudo">Pseudo *</label>
+            <input type="text" id="pseudo" name="pseudo">
+          </div>
+          <div id="contentRoomName" style="margin:1em 0 1em 0;">
+            <label for="room">Room *</label>
+            <input type="text" id="room" name="room">
+          </div>
+          <div id="contentBtnValider">
+            <button id="btn-valider-connection">Valider</button>
+          </div>
+        </div>
+        <div id="divInfosRooms">
+          <div id="contentListRooms">
+            <h5>Liste des rooms actives</h5>
+            <ul id="listRooms"></ul>
+          </div>
+        </div>
+      </div>
     </div>
+  </div>
 
     <script>
         var socket = io({
@@ -117,11 +119,15 @@
 
         socket.on('roomJoin', (data) => {
             roomNameTitle.innerHTML = '<strong> Room Name : ' + data.room + '</strong>'; // affichage nom room
-            affichage.innerHTML += '<br><strong>' + data.text + '</strong>'; // affichage message room rejointe
+            displayMessage(data);
         });
 
         socket.on('userJoin', (data) => {
-            affichage.innerHTML += '<br><strong>' + data.text + '</strong>'; // affichage user join room
+            displayMessage(data);
+        });
+
+        socket.on('userLeave', (data) => {
+            displayMessage(data);
         });
 
         socket.on('updateListUsers', (data) => {
@@ -140,6 +146,10 @@
             listRooms.appendChild(li);
           });
         });
+
+        function displayMessage(data){
+          affichage.innerHTML += '<br><strong>' + data.text + '</strong>'; // affichage user join room
+        }
 
         function connectToRoom() {
             socket.emit('connectToRoom', { pseudo: pseudo.value, room: room.value });

@@ -34,6 +34,10 @@ io.on('connection', client => {
         io.to(client.id).emit('event', { pseudo: '<span class="colorSender">' + client.pseudo + '</span>', text: data }); // affichage pour le sender
         client.to(client.room).emit('event', { pseudo: client.pseudo, text: data }); // affichage pour les autres
     });
+
+    client.on('disconnect', () => {
+      client.to(client.room).emit('userLeave',{ text: client.pseudo + ' left the room !'});
+    });
 });
 
 
