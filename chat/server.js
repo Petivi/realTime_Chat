@@ -30,8 +30,11 @@ io.on('connection', client => {
 /*
 CHEAT SHEET : https://socket.io/docs/emit-cheatsheet/
 
+// Le serveur parle :
 io.to(client.id).emit()... -> pour envoyer uniquement au sender (à soi-même)
 io.emit()... -> pour envoyer à tous le monde
+
+// Le client parle (par l'intermédiaire du serveur) :
 client.to(client.room).emit()... -> pour envoyer à une room (ou plusieurs) mais pas au sender
 client.broadcast.emit()... -> pour envoyer à tous le monde sauf au sender (quand il n'y a pas de room)
 
