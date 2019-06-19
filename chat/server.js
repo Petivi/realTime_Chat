@@ -1,14 +1,33 @@
 const express = require('express');
 const socketio = require('socket.io');
+const mongoose = require('mongoose');
+const questionRoutes = require('./routes/question');
+const bodyParser = require('body-parser');
+
+
 
 var app = express();
 app.use(express.static('static'));
+app.use(bodyParser.json());
+mongoose.connect(
+    'mongodb://localhost:27017/chat_db',
+    {
+        useNewUrlParser: true,
+        useFindAndModify: false
+    }
+).then(res => {
+    console.log('MongoDB connected');
+
+    questionRoutes(app);
+    console.log(questionRoutes);
+});
+
 var server = app.listen(3000, () => {
-    console.log('serveur ecoutant sur le port 3000...')
+  console.log('serveur ecoutant sur le port 3000...')
 });
 var io = socketio(server);
-
 var ttRoom = [];
+
 
 io.on('connection', client => {
     client.emit('roomsInfo', ttRoom);
