@@ -31,10 +31,10 @@
                         <h6 class="titreMenu">Navigation</h6>
                         <ul class="list">
                             <li>
-                                <span id="chatMenu" class="clickable">Chat</span>
+                                <span id="chatMenu" class="clickable menu">Chat</span>
                             </li>
                             <li style="display: none">
-                                <span id="qpcMenu" class="clickable">Quiz</span>
+                                <span id="qpcMenu" class="clickable menu">Quiz</span>
                             </li>
                         </ul>
                         <hr>
@@ -53,7 +53,10 @@
                             <div class="card-body">
                                 <div class="row">
                                     <div class="col">
-                                        <button id="btnDevenirAnimateur">Devenir animateur</button>
+                                        <button id="btnDevenirAnimateur" style="display: none">
+                                            Devenir animateur
+                                        </button>
+                                        <div class="row" id="affichageQuiz"></div>
                                     </div>
                                 </div>
                             </div>
@@ -124,18 +127,38 @@
         </div>
     </div>
     <script>
+        var xhr = new XMLHttpRequest();
+        var ttQuestion = [];
         var qpcMenu = document.getElementById('qpcMenu');
         var chatMenu = document.getElementById('chatMenu');
         var vueChat = document.getElementById('vueChat');
         var vueQpc = document.getElementById('vueQpc');
         var listUsers = document.getElementById('listUsers');
+        var btnDevenirAnimateur = document.getElementById('btnDevenirAnimateur');
         var utilisateur = {};
 
         qpcMenu.addEventListener('click', () => {
+            xhr.open('GET', 'question');
+            xhr.send(null);
+            xhr.addEventListener('readystatechange', function () {
+                if(xhr.readyState === 4) {
+                    let res = JSON.parse(xhr.response);
+                    if(res.response && res.response.length > 0) {
+                        ttQuestion = res.response;
+                    }
+                }
+            });
             vueQpc.style.display = 'block';
             vueChat.classList.add('col-md-3');
             vueChat.classList.remove('col');
             displayQpc = true;
+            socket.emit('checkAnimateur', (response) => { //la reponse ici va etre le retour de la callback coté serveur
+                if (!response) { //il n'y a pas d'animateur pour l'instant on peut afficher le bouton pour devenir animateur
+                    btnDevenirAnimateur.style.display = 'inline-block';
+                } else {
+                    btnDevenirAnimateur.style.display = 'none';
+                }
+            });
         });
 
         chatMenu.addEventListener('click', () => {
@@ -149,7 +172,6 @@
             listUsers.innerHTML = "";
             ttUtilisateur.forEach(function (user) {
                 var li = document.createElement('li');
-
                 li.innerHTML = (user.animateur ? (user.pseudo + ' (Animateur)') : user.pseudo);
                 listUsers.appendChild(li);
             });

@@ -19,18 +19,17 @@ var ttRoom = [];
 var quizzQuestions = [];
 
 mongoose.connect(
-  'mongodb://localhost:27017/chat_db',
-  {
-    useNewUrlParser: true,
-    useFindAndModify: false
-  }
-).then(res => {
-  console.log('MongoDB connected');
+    'mongodb://localhost:27017/chat_db',
+    {
+        useNewUrlParser: true,
+        useFindAndModify: false
+    }).then(res => {
+    console.log('MongoDB connected');
 
-  questionRoutes(app);
-  getQuestions().then(res => {
-    quizzQuestions = res;
-  })
+    questionRoutes(app);
+    getQuestions().then(res => {
+        quizzQuestions = res;
+    });
 });
 
 io.on('connection', client => {
@@ -41,9 +40,9 @@ io.on('connection', client => {
         client.room = data.room;
         let room = ttRoom.find(room => room.name === data.room)
         if (room) { //si la salle existe déjà on ajout juste le mec dedans
-            room.users.push({pseudo: data.pseudo, id: client.id, animateur: false});
+            room.users.push({ pseudo: data.pseudo, id: client.id, animateur: false });
         } else {
-            room = { name: data.room, users: [{pseudo: data.pseudo, id: client.id, animateur: false}] }
+            room = { name: data.room, users: [{ pseudo: data.pseudo, id: client.id, animateur: false }] }
             ttRoom.push(room);
         }
 
@@ -83,17 +82,28 @@ io.on('connection', client => {
     });
     // FIN PARTIE CHAT !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     // PARTIE JEU !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    client.on('newJoueur', () => {
-        console.log(client.room)
+    client.on('hideBtnDevenirAnimateur', () => {
+        io.to(client.room).emit('hideBtnDevenirAnimateur');
     });
-
-    client.on('setNewAnimateur', () => {
+    
+    client.on('checkAnimateur', (callback) => { // cette callback permet de repondre directement a l'emit du client 
         let room = ttRoom.find(room => room.name === client.room);
-        if(!room.users.find(u => u.animateur)) {
+        if (room.users.find(u => u.animateur)) {
+            callback(true);
+        } else {
+            callback(false);
+        }
+    });
+    
+    client.on('setNewAnimateur', (callback) => {
+        let room = ttRoom.find(room => room.name === client.room);
+        if (!room.users.find(u => u.animateur)) {
             let user = room.users.find(u => u.id === client.id);
             user.animateur = true;
             io.emit('updateListUsers', room.users);
+            callback(true) //on renvoi a l'utilisateur qu'il est bien animateur
         }
+        callback(false);
     });
 
 
