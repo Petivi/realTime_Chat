@@ -86,6 +86,15 @@ io.on('connection', client => {
         console.log(client.room)
     });
 
+    client.on('setNewAnimateur', () => {
+        let room = ttRoom.find(room => room.name === client.room);
+        if(!room.users.find(u => u.animateur)) {
+            let user = room.users.find(u => u.id === client.id);
+            user.animateur = true;
+            io.emit('updateListUsers', room.users);
+        }
+    });
+
 
     // FIN PARTIE JEU !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 });

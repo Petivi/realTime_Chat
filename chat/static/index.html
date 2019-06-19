@@ -145,11 +145,12 @@
             displayQpc = false;
         });
 
-        socket.on('updateListUsers', (data) => {
+        socket.on('updateListUsers', (ttUtilisateur) => {
             listUsers.innerHTML = "";
-            data.forEach(function (tab) {
+            ttUtilisateur.forEach(function (user) {
                 var li = document.createElement('li');
-                li.innerHTML = tab;
+
+                li.innerHTML = (user.animateur ? (user.pseudo + ' (Animateur)') : user.pseudo);
                 listUsers.appendChild(li);
             });
         });
