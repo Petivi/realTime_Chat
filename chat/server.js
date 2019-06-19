@@ -67,9 +67,10 @@ io.on('connection', client => {
         });
 
 
+        console.log(roomFound);
         if (typeof roomFound !== 'undefined') {
             var roomUsersToDelete = roomFound.users.find(function (tabUsers) {
-                return tabUsers === client.pseudo; // on récupère le nom du user à delete
+                return tabUsers.id === client.id; // on récupère le nom du user à delete
             });
             for (var i = 0; i < roomFound.users.length; i++) {
                 if (roomFound.users[i] === roomUsersToDelete) { // si on trouve l'utilisateur
