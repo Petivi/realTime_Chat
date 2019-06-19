@@ -11,7 +11,7 @@ var btnSendMsg = document.getElementById('btn-send-msg');
 var btnLeave = document.getElementById('btnLeave');
 var classSender = "";
 var listRooms = document.getElementById('listRooms');
-var listUsers = document.getElementById('listUsers');
+
 
 btnValiderConnection.addEventListener('click', (e) => {
     if (pseudo.value != "" && room.value != "") {
@@ -35,7 +35,7 @@ btnSendMsg.addEventListener('click', (e) => {
     sendMessage();
 });
 
-message.addEventListener('keydown', (e) => {
+message.addEventListener('keyup', (e) => { // laisser keyup pour eviter que la zone de text prenne un /n dans sa mere
     let value = message.value;
     let numberOfLineBreaks = (value.match(/\n/g) || []).length;
     console.log(numberOfLineBreaks)
@@ -61,15 +61,6 @@ socket.on('userLeave', (data) => {
     displayInfoRoom(data);
 });
 
-socket.on('updateListUsers', (data) => {
-    listUsers.innerHTML = "";
-    data.forEach(function(tab) {
-        var li = document.createElement('li');
-        li.innerHTML = tab;
-        listUsers.appendChild(li);
-    });
-});
-
 socket.on('roomsInfo', (data) => {
     data.forEach(function(tab) {
         var li = document.createElement('li');
@@ -87,6 +78,9 @@ function connectToRoom() {
         pseudo: pseudo.value,
         room: room.value
     });
+    utilisateur.pseudo = pseudo.value;
+    utilisateur.room = room.value;
+    setQpcMenu();
     divInfosRooms.style.display = 'none';
     divInfosUser.style.display = 'none';
     contentMessage.style.display = 'block';
