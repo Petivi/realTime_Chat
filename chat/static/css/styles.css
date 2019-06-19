@@ -1,6 +1,14 @@
 .page {
     margin-top: 2em;
     margin-bottom: 2em;
+    margin-right: auto;
+    margin-left: auto;
+    max-width: 95%;
+}
+
+.clickable:hover {
+    cursor: pointer;
+    color: rgb(78, 78, 255);
 }
 
 .colorSender {
