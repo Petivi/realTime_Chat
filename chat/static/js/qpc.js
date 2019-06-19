@@ -40,24 +40,30 @@ function getTextAnimateur() {
             </div>
         </div>
         <div class="row mt-2">
-            <div class="col">`;
+            <div class="col">
+              <select id="listQuestionsAnimateur">
+                <option disabled selected value="0" >Choix de la question</option>`;
+                  ttQuestion.forEach(q => {
+                    texte += `<option value="`+q._id+`" >`+q.question+`</option>`;
+                  });
 
-    ttQuestion.forEach(q => {
-        texte += `
-        <div class="questionSelectable clickable">
-            <div class="row">
-                <div class="col">
-                    `+ q.question + `
-                </div>
-            </div>`+
-            /* <div class="row"> //partie réponse ça me fait mal de devoir l'enlever x)
-                <div class="col">
-                    `+ getResponseTable(q) + `
-                </div>
-            </div> */
-        `</div>`;
+                texte += `</select>`;
 
-    });
+    // ttQuestion.forEach(q => {
+    //     texte += `
+    //     <div class="questionSelectable clickable">
+    //         <div class="row">
+    //             <div class="col">
+    //                 `+ q.question + `
+    //             </div>
+    //         </div>`+
+    //         /* <div class="row"> //partie réponse ça me fait mal de devoir l'enlever x)
+    //             <div class="col">
+    //                 `+ getResponseTable(q) + `
+    //             </div>
+    //         </div> */
+    //     `</div>`;
+    // });
 
     texte += `</div></div>`;
     return texte;
@@ -73,7 +79,7 @@ function getResponseTable(question) {
                     <strong>Réponse : </strong>` + r.text +
                 `</div>` +
             /*  `<div class="col">
-                    <strong>Texte si choisie : </strong>` + r.responseText + 
+                    <strong>Texte si choisie : </strong>` + r.responseText +
                 </div>
             */
                 `<div class="col">
@@ -85,5 +91,3 @@ function getResponseTable(question) {
     texte += `</ul>`;
     return texte;
 }
-
-
