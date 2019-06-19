@@ -12,19 +12,34 @@
 </head>
 
 <body id="body">
-    <div class="container page">
+    <script>
+        var socket = io({
+            transports: ['websocket'],
+            upgrade: false
+        });
+        var displayChat = false;
+        var displayQpc = false;
+    </script>
+    <div class="page">
         <div class="row">
             <div class="col-md-2">
                 <div class="card">
                     <div class="card-header">
-                        Menu
+                        <h1>Menu</h1>
                     </div>
                     <div class="card-body">
-                        <a href="qpc.html">Question pour un BOSS !</a>
+                        <ul>
+                            <li id="chat" class="clickable">
+                                Chat
+                            </li>
+                            <li id="qpc" class="clickable">
+                                Question pour un boss
+                            </li>
+                        </ul>
                     </div>
                 </div>
             </div>
-            <div class="col">
+            <div id="vueChat" class="col">
                 <div class="card">
                     <div class="card-header">
                         <h1>Secret Chat</h1>
@@ -91,116 +106,39 @@
                     </div>
                 </div>
             </div>
+            <div class="col" id="vueQpc" style="display: none">
+                <div class="card">
+                    <div class="card-header">
+                        <h1>Question pour un BOSS !</h1>
+                    </div>
+                    <div class="card-body">
+
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-
     <script>
-        var socket = io({
-            transports: ['websocket'],
-            upgrade: false
-        });
-        var btnValiderConnection = document.getElementById('btn-valider-connection');
-        var pseudo = document.getElementById('pseudo');
-        var room = document.getElementById('room');
-        var divInfosRooms = document.getElementById('divInfosRooms');
-        var divInfosUser = document.getElementById('divInfosUser');
-        var message = document.getElementById('message');
-        var affichage = document.getElementById('affichage');
-        var roomNameTitle = document.getElementById('roomNameTitle');
-        var contentMessage = document.getElementById('contentMessage');
-        var btnSendMsg = document.getElementById('btn-send-msg');
-        var btnLeave = document.getElementById('btnLeave');
-        var classSender = "";
-        var listRooms = document.getElementById('listRooms');
-        var listUsers = document.getElementById('listUsers');
-
-        btnValiderConnection.addEventListener('click', (e) => {
-            if (pseudo.value != "" && room.value != "") {
-                connectToRoom();
-            }
+        var qpc = document.getElementById('qpc');
+        var chat = document.getElementById('chat');
+        var vueChat = document.getElementById('vueChat');
+        var vueQpc = document.getElementById('vueQpc');
+        qpc.addEventListener('click', () => {
+            vueQpc.style.display = 'block';
+            vueChat.style.display = 'none';
+            displayChat = false;
+            displayQpc = true;
         });
 
-        room.addEventListener('keyup', (e) => {
-            if (e.keyCode === 13 && pseudo.value != "" && room.value != "") {
-                connectToRoom();
-            }
+        chat.addEventListener('click', () => {
+            vueQpc.style.display = 'none';
+            vueChat.style.display = 'block';
+            displayChat = true;
+            displayQpc = false;
         });
-
-        pseudo.addEventListener('keyup', (e) => {
-            if (e.keyCode === 13 && pseudo.value != "" && room.value != "") {
-                connectToRoom();
-            }
-        });
-
-        btnSendMsg.addEventListener('click', (e) => {
-            sendMessage();
-        });
-
-        message.addEventListener('keydown', (e) => {
-            let value = message.value;
-            let numberOfLineBreaks = (value.match(/\n/g) || []).length;
-            console.log(numberOfLineBreaks)
-            if (e.keyCode === 13) {
-                sendMessage();
-            }
-        });
-
-        socket.on('event', (data) => {
-            affichage.innerHTML += '<br><strong>' + data.pseudo + '</strong> : ' + data.text; // message
-        });
-
-        socket.on('roomJoin', (data) => {
-            roomNameTitle.innerHTML = '<strong> Room Name : ' + data.room + '</strong>'; // affichage nom room
-            displayInfoRoom(data);
-        });
-
-        socket.on('userJoin', (data) => {
-            displayInfoRoom(data);
-        });
-
-        socket.on('userLeave', (data) => {
-            displayInfoRoom(data);
-        });
-
-        socket.on('updateListUsers', (data) => {
-            listUsers.innerHTML = "";
-            data.forEach(function(tab) {
-                var li = document.createElement('li');
-                li.innerHTML = tab;
-                listUsers.appendChild(li);
-            });
-        });
-
-        socket.on('roomsInfo', (data) => {
-            data.forEach(function(tab) {
-                var li = document.createElement('li');
-                li.innerHTML = tab.name + " (" + tab.users.length + ")";
-                listRooms.appendChild(li);
-            });
-        });
-
-        function displayInfoRoom(data) {
-            affichage.innerHTML += '<br><strong>' + data.text + '</strong>'; // affichage user join room
-        }
-
-        function connectToRoom() {
-            socket.emit('connectToRoom', {
-                pseudo: pseudo.value,
-                room: room.value
-            });
-            divInfosRooms.style.display = 'none';
-            divInfosUser.style.display = 'none';
-            contentMessage.style.display = 'block';
-        }
-
-        function sendMessage() {
-            if (message.value !== '') {
-                socket.emit('sendMessage', message.value);
-                message.value = '';
-            }
-        }
     </script>
-
+    <script src="js/chat.js"></script>
+    <script src="js/qpc.js"></script>
 </body>
 
 </html>

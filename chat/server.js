@@ -30,6 +30,7 @@ var ttRoom = [];
 
 
 io.on('connection', client => {
+    // PARTIE CHAT !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     client.emit('roomsInfo', ttRoom);
     client.on('connectToRoom', data => {
         client.pseudo = data.pseudo;
@@ -73,6 +74,14 @@ io.on('connection', client => {
             io.to(client.room).emit('updateListUsers', roomFound.users);
         }
     });
+    // FIN PARTIE CHAT !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    // PARTIE JEU !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    client.on('newJoueur', () => {
+        console.log(client.room)
+    });
+
+
+    // FIN PARTIE JEU !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 });
 
 
