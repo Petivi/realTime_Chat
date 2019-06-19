@@ -2,6 +2,7 @@ const express = require('express');
 const socketio = require('socket.io');
 const mongoose = require('mongoose');
 const questionRoutes = require('./routes/question');
+const { getQuestions } = require('./queries/question');
 const bodyParser = require('body-parser');
 
 
@@ -19,7 +20,9 @@ mongoose.connect(
     console.log('MongoDB connected');
 
     questionRoutes(app);
-    console.log(questionRoutes);
+    getQuestions().then(res => {
+      console.log(res);
+    })
 });
 
 var server = app.listen(3000, () => {

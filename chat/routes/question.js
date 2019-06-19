@@ -9,20 +9,8 @@ module.exports = (app) => {
       res.status(201).send({response: 'created'});
     });
   });
-  //
-  // app.get('/match', (req, res) => {
-  //   Match.find({}, { "__v": 0, "password": 0, "token": 0 })
-  //     .then(matches => {
-  //         res.send(matches);
-  //     });
-  // });
 
 
-  function getQuestions(){
-      Question.find({}, { "__v": 0, "token": 0 })
-        .then(questions => {
-            return questions;
-        });
-  }
+
 
 }
