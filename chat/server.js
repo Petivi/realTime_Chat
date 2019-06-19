@@ -51,6 +51,7 @@ io.on('connection', client => {
         io.to(client.id).emit('roomJoin', { room: client.room, text: "You joined the room !" }); // affichage pour le sender
         client.to(client.room).emit('userJoin', { text: client.pseudo + " joined the room !" }); // affichage pour les autres
         io.to(client.room).emit('updateListUsers', room.users);
+        io.emit('roomsInfo', ttRoom);
     });
 
     client.on('sendMessage', data => {
@@ -77,6 +78,7 @@ io.on('connection', client => {
             }
             io.to(client.room).emit('updateListUsers', roomFound.users);
         }
+        io.emit('roomsInfo', ttRoom);
     });
     // FIN PARTIE CHAT !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     // PARTIE JEU !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!

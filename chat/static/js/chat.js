@@ -62,6 +62,7 @@ socket.on('userLeave', (data) => {
 });
 
 socket.on('roomsInfo', (data) => {
+    listRooms.innerHTML = "";
     data.forEach(function(tab) {
         var li = document.createElement('li');
         li.innerHTML = tab.name + " (" + tab.users.length + ")";
