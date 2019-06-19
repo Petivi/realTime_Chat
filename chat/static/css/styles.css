@@ -1,11 +1,26 @@
+.page {
+    margin-top: 2em;
+    margin-bottom: 2em;
+}
+
 .colorSender {
     color: red;
 }
 
-.customFieldset{
-  border-width: 2px;
-  border-style: groove;
-  border-color: threedface;
-  margin-top:2em;
-  padding: 5px;
+.customFieldset {
+    border-width: 2px;
+    border-style: groove;
+    border-color: threedface;
+    padding: 5px;
+}
+
+.textArea {
+    width: 100%;
+    border: none;
+    border-bottom: 2px solid black;
+}
+
+.textArea:focus {
+    outline: none;
+    border-bottom: 2px solid rgb(255, 11, 11);
 }

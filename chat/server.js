@@ -1,5 +1,4 @@
 const express = require('express');
-const bodyParser = require('body-parser');
 const socketio = require('socket.io');
 
 var app = express();
@@ -36,24 +35,24 @@ io.on('connection', client => {
     });
 
     client.on('disconnect', () => {
-      client.to(client.room).emit('userLeave',{ text: client.pseudo + ' left the room !'});
-      client.leave(client.room); // Pas sur que ça marche :o
-      var roomFound = ttRoom.find(function(tab) {
-        return tab.name === client.room;  // on récupère le nom de la room
-      });
-
-
-      if (typeof roomFound !== 'undefined') {
-        var roomUsersToDelete = roomFound.users.find(function(tabUsers) {
-          return tabUsers === client.pseudo; // on récupère le nom du user à delete
+        client.to(client.room).emit('userLeave', { text: client.pseudo + ' left the room !' });
+        client.leave(client.room); // Pas sur que ça marche :o
+        var roomFound = ttRoom.find(function(tab) {
+            return tab.name === client.room; // on récupère le nom de la room
         });
-        for( var i = 0; i < roomFound.users.length; i++){
-           if ( roomFound.users[i] === roomUsersToDelete) { // si on trouve l'utilisateur
-             roomFound.users.splice(i, 1); // on le supprime de la liste
-           }
+
+
+        if (typeof roomFound !== 'undefined') {
+            var roomUsersToDelete = roomFound.users.find(function(tabUsers) {
+                return tabUsers === client.pseudo; // on récupère le nom du user à delete
+            });
+            for (var i = 0; i < roomFound.users.length; i++) {
+                if (roomFound.users[i] === roomUsersToDelete) { // si on trouve l'utilisateur
+                    roomFound.users.splice(i, 1); // on le supprime de la liste
+                }
+            }
+            io.to(client.room).emit('updateListUsers', roomFound.users);
         }
-        io.to(client.room).emit('updateListUsers', roomFound.users);
-      }
     });
 });
 

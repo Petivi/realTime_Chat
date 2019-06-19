@@ -12,55 +12,87 @@
 </head>
 
 <body id="body">
-  <div class="container">
-    <div class="row">
-      <div class="col-md-2">
-        menu
-      </div>
-      <div class="col">
-        <h1>Secret Chat</h1>
-        <div class="">
-          <h2 id="roomNameTitle"></h2>
-        </div>
-        <div style="display: none" id="contentMessage">
-          <textarea style="width: 100%;" id="message" rows="4"></textarea>
-          <button id="btn-send-msg">Envoyer</button>
-          <div class="row">
-            <div class="col-sm-9">
-              <fieldset class="customFieldset">
-                <div id="affichage"></div>
-              </fieldset>
+    <div class="container page">
+        <div class="row">
+            <div class="col-md-2">
+                <div class="card">
+                    <div class="card-header">
+                        Menu
+                    </div>
+                    <div class="card-body">
+                        <a href="qpc.html">Question pour un BOSS !</a>
+                    </div>
+                </div>
             </div>
-            <div class="col-sm-3">
-              <fieldset class="customFieldset">
-                <h5>Liste des utilisateurs :</h5>
-                <ul id="listUsers"></ul>
-              </fieldset>
+            <div class="col">
+                <div class="card">
+                    <div class="card-header">
+                        <h1>Secret Chat</h1>
+                    </div>
+                    <div class="card-body">
+                        <div style="display: none" id="contentMessage">
+                            <div class="row">
+                                <div class="col-md-7">
+                                    <h2 id="roomNameTitle"></h2>
+                                </div>
+                                <div class="col-md-2 text-right">
+                                    <button id="btnLeave">Quitter la salle</button>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <div class="col">
+                                                    <textarea autofocus placeholder="Taper votre message" class="textArea" id="message" rows="1"></textarea>
+                                                </div>
+                                                <div class="col-md-auto text-right">
+                                                    <button id="btn-send-msg">Envoyer</button>
+                                                </div>
+                                            </div>
+                                            <div class="row mt-2">
+                                                <div class="col">
+                                                    <div id="affichage"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <h5>Liste des utilisateurs :</h5>
+                                            <ul id="listUsers"></ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="divInfosUser">
+                            <div id="contentPseudo">
+                                <label for="pseudo">Pseudo *</label>
+                                <input autofocus type="text" id="pseudo" name="pseudo">
+                            </div>
+                            <div id="contentRoomName" style="margin:1em 0 1em 0;">
+                                <label for="room">Room *</label>
+                                <input type="text" id="room" name="room">
+                            </div>
+                            <div id="contentBtnValider">
+                                <button id="btn-valider-connection">Valider</button>
+                            </div>
+                        </div>
+                        <div id="divInfosRooms">
+                            <div id="contentListRooms">
+                                <h5>Liste des rooms actives</h5>
+                                <ul id="listRooms"></ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-          </div>
         </div>
-        <div id="divInfosUser">
-          <div id="contentPseudo">
-            <label for="pseudo">Pseudo *</label>
-            <input type="text" id="pseudo" name="pseudo">
-          </div>
-          <div id="contentRoomName" style="margin:1em 0 1em 0;">
-            <label for="room">Room *</label>
-            <input type="text" id="room" name="room">
-          </div>
-          <div id="contentBtnValider">
-            <button id="btn-valider-connection">Valider</button>
-          </div>
-        </div>
-        <div id="divInfosRooms">
-          <div id="contentListRooms">
-            <h5>Liste des rooms actives</h5>
-            <ul id="listRooms"></ul>
-          </div>
-        </div>
-      </div>
     </div>
-  </div>
 
     <script>
         var socket = io({
@@ -77,6 +109,7 @@
         var roomNameTitle = document.getElementById('roomNameTitle');
         var contentMessage = document.getElementById('contentMessage');
         var btnSendMsg = document.getElementById('btn-send-msg');
+        var btnLeave = document.getElementById('btnLeave');
         var classSender = "";
         var listRooms = document.getElementById('listRooms');
         var listUsers = document.getElementById('listUsers');
@@ -103,7 +136,10 @@
             sendMessage();
         });
 
-        message.addEventListener('keyup', (e) => {
+        message.addEventListener('keydown', (e) => {
+            let value = message.value;
+            let numberOfLineBreaks = (value.match(/\n/g) || []).length;
+            console.log(numberOfLineBreaks)
             if (e.keyCode === 13) {
                 sendMessage();
             }
@@ -129,34 +165,39 @@
         socket.on('updateListUsers', (data) => {
             listUsers.innerHTML = "";
             data.forEach(function(tab) {
-              var li = document.createElement('li');
-              li.innerHTML = tab;
-              listUsers.appendChild(li);
+                var li = document.createElement('li');
+                li.innerHTML = tab;
+                listUsers.appendChild(li);
             });
         });
 
         socket.on('roomsInfo', (data) => {
-          data.forEach(function(tab) {
-            var li = document.createElement('li');
-            li.innerHTML = tab.name + " ("+tab.users.length+")";
-            listRooms.appendChild(li);
-          });
+            data.forEach(function(tab) {
+                var li = document.createElement('li');
+                li.innerHTML = tab.name + " (" + tab.users.length + ")";
+                listRooms.appendChild(li);
+            });
         });
 
-        function displayInfoRoom(data){
-          affichage.innerHTML += '<br><strong>' + data.text + '</strong>'; // affichage user join room
+        function displayInfoRoom(data) {
+            affichage.innerHTML += '<br><strong>' + data.text + '</strong>'; // affichage user join room
         }
 
         function connectToRoom() {
-            socket.emit('connectToRoom', { pseudo: pseudo.value, room: room.value });
+            socket.emit('connectToRoom', {
+                pseudo: pseudo.value,
+                room: room.value
+            });
             divInfosRooms.style.display = 'none';
             divInfosUser.style.display = 'none';
             contentMessage.style.display = 'block';
         }
 
         function sendMessage() {
-            socket.emit('sendMessage', message.value);
-            message.value = '';
+            if (message.value !== '') {
+                socket.emit('sendMessage', message.value);
+                message.value = '';
+            }
         }
     </script>
 
