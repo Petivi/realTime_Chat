@@ -6,6 +6,14 @@
     max-width: 95%;
 }
 
+.list {
+    list-style: none;
+}
+
+.titreMenu {
+    text-decoration: underline;
+}
+
 .clickable:hover {
     cursor: pointer;
     color: rgb(78, 78, 255);

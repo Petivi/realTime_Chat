@@ -25,32 +25,49 @@
             <div class="col-md-2">
                 <div class="card">
                     <div class="card-header">
-                        <h1>Menu</h1>
+                        <h3>Info</h3>
                     </div>
                     <div class="card-body">
-                        <ul>
-                            <li id="chat" class="clickable">
-                                Chat
+                        <h6 class="titreMenu">Navigation</h6>
+                        <ul class="list">
+                            <li>
+                                <span id="chatMenu" class="clickable">Chat</span>
                             </li>
-                            <li id="qpc" class="clickable">
-                                Question pour un boss
+                            <li style="display: none">
+                                <span id="qpcMenu" class="clickable">Quiz</span>
                             </li>
                         </ul>
+                        <hr>
+                        <h6 class="titreMenu">Utilisateurs</h6>
+                        <ul id="listUsers"></ul>
                     </div>
                 </div>
             </div>
-            <div id="vueChat" class="col">
+            <div class="col-md-7" id="vueQpc" style="display: none">
+                <div class="row">
+                    <div class="col">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3>Quiz</h3>
+                            </div>
+                            <div class="card-body">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="vueChat" class="col-md-3">
                 <div class="card">
                     <div class="card-header">
-                        <h1>Secret Chat</h1>
+                        <h3>Secret Chat</h3>
                     </div>
                     <div class="card-body">
                         <div style="display: none" id="contentMessage">
                             <div class="row">
-                                <div class="col-md-7">
-                                    <h2 id="roomNameTitle"></h2>
+                                <div class="col">
+                                    <h4 id="roomNameTitle"></h4>
                                 </div>
-                                <div class="col-md-2 text-right">
+                                <div class="col-md-auto text-right">
                                     <button id="btnLeave">Quitter la salle</button>
                                 </div>
                             </div>
@@ -60,7 +77,8 @@
                                         <div class="card-body">
                                             <div class="row">
                                                 <div class="col">
-                                                    <textarea autofocus placeholder="Taper votre message" class="textArea" id="message" rows="1"></textarea>
+                                                    <textarea autofocus placeholder="Taper votre message"
+                                                        class="textArea" id="message" rows="1"></textarea>
                                                 </div>
                                                 <div class="col-md-auto text-right">
                                                     <button id="btn-send-msg">Envoyer</button>
@@ -71,14 +89,6 @@
                                                     <div id="affichage"></div>
                                                 </div>
                                             </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="card">
-                                        <div class="card-body">
-                                            <h5>Liste des utilisateurs :</h5>
-                                            <ul id="listUsers"></ul>
                                         </div>
                                     </div>
                                 </div>
@@ -106,36 +116,42 @@
                     </div>
                 </div>
             </div>
-            <div class="col" id="vueQpc" style="display: none">
-                <div class="card">
-                    <div class="card-header">
-                        <h1>Question pour un BOSS !</h1>
-                    </div>
-                    <div class="card-body">
-
-                    </div>
-                </div>
-            </div>
         </div>
     </div>
     <script>
-        var qpc = document.getElementById('qpc');
-        var chat = document.getElementById('chat');
+        var qpcMenu = document.getElementById('qpcMenu');
+        var chatMenu = document.getElementById('chatMenu');
         var vueChat = document.getElementById('vueChat');
         var vueQpc = document.getElementById('vueQpc');
-        qpc.addEventListener('click', () => {
+        var listUsers = document.getElementById('listUsers');
+        var utilisateur = {};
+
+        qpcMenu.addEventListener('click', () => {
             vueQpc.style.display = 'block';
-            vueChat.style.display = 'none';
-            displayChat = false;
             displayQpc = true;
         });
 
-        chat.addEventListener('click', () => {
+        chatMenu.addEventListener('click', () => {
             vueQpc.style.display = 'none';
-            vueChat.style.display = 'block';
-            displayChat = true;
             displayQpc = false;
         });
+
+        socket.on('updateListUsers', (data) => {
+            listUsers.innerHTML = "";
+            data.forEach(function (tab) {
+                var li = document.createElement('li');
+                li.innerHTML = tab;
+                listUsers.appendChild(li);
+            });
+        });
+
+        function setQpcMenu() {
+            if (utilisateur.room) {
+                qpcMenu.parentElement.style.display = 'list-item';
+            } else {
+                qpcMenu.parentElement.style.display = 'none';
+            }
+        }
     </script>
     <script src="js/chat.js"></script>
     <script src="js/qpc.js"></script>

@@ -12,7 +12,7 @@ app.use(express.static('static'));
 app.use(bodyParser.json());
 
 var server = app.listen(3000, () => {
-  console.log('serveur ecoutant sur le port 3000...')
+    console.log('serveur ecoutant sur le port 3000...')
 });
 var io = socketio(server);
 var ttRoom = [];
@@ -61,13 +61,13 @@ io.on('connection', client => {
     client.on('disconnect', () => {
         client.to(client.room).emit('userLeave', { text: client.pseudo + ' left the room !' });
         client.leave(client.room); // Pas sur que ça marche :o
-        var roomFound = ttRoom.find(function(tab) {
+        var roomFound = ttRoom.find(function (tab) {
             return tab.name === client.room; // on récupère le nom de la room
         });
 
 
         if (typeof roomFound !== 'undefined') {
-            var roomUsersToDelete = roomFound.users.find(function(tabUsers) {
+            var roomUsersToDelete = roomFound.users.find(function (tabUsers) {
                 return tabUsers === client.pseudo; // on récupère le nom du user à delete
             });
             for (var i = 0; i < roomFound.users.length; i++) {
