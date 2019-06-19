@@ -39,9 +39,9 @@ io.on('connection', client => {
         client.room = data.room;
         let room = ttRoom.find(room => room.name === data.room)
         if (room) { //si la salle existe déjà on ajout juste le mec dedans
-            room.users.push(data.pseudo);
+            room.users.push({pseudo: data.pseudo, id: client.id, animateur: false});
         } else {
-            room = { name: data.room, users: [data.pseudo] }
+            room = { name: data.room, users: [{pseudo: data.pseudo, id: client.id, animateur: false}] }
             ttRoom.push(room);
         }
 

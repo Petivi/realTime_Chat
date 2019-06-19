@@ -51,15 +51,20 @@
                                 <h3>Quiz</h3>
                             </div>
                             <div class="card-body">
+                                <div class="row">
+                                    <div class="col">
+                                        <button id="btnDevenirAnimateur">Devenir animateur</button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div id="vueChat" class="col-md-3">
+            <div id="vueChat" class="col">
                 <div class="card">
                     <div class="card-header">
-                        <h3>Secret Chat</h3>
+                        <h3>Chat</h3>
                     </div>
                     <div class="card-body">
                         <div style="display: none" id="contentMessage">
@@ -128,11 +133,15 @@
 
         qpcMenu.addEventListener('click', () => {
             vueQpc.style.display = 'block';
+            vueChat.classList.add('col-md-3');
+            vueChat.classList.remove('col');
             displayQpc = true;
         });
 
         chatMenu.addEventListener('click', () => {
             vueQpc.style.display = 'none';
+            vueChat.classList.remove('col-md-3');
+            vueChat.classList.add('col');
             displayQpc = false;
         });
 
