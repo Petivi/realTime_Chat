@@ -10,26 +10,28 @@ const bodyParser = require('body-parser');
 var app = express();
 app.use(express.static('static'));
 app.use(bodyParser.json());
-mongoose.connect(
-    'mongodb://localhost:27017/chat_db',
-    {
-        useNewUrlParser: true,
-        useFindAndModify: false
-    }
-).then(res => {
-    console.log('MongoDB connected');
-    questionRoutes(app);
-    getQuestions().then(res => {
-        console.log(res);
-    })
-});
 
 var server = app.listen(3000, () => {
     console.log('serveur ecoutant sur le port 3000...')
 });
 var io = socketio(server);
 var ttRoom = [];
+var quizzQuestions = [];
 
+mongoose.connect(
+  'mongodb://localhost:27017/chat_db',
+  {
+    useNewUrlParser: true,
+    useFindAndModify: false
+  }
+).then(res => {
+  console.log('MongoDB connected');
+
+  questionRoutes(app);
+  getQuestions().then(res => {
+    quizzQuestions = res;
+  })
+});
 
 io.on('connection', client => {
     // PARTIE CHAT !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -49,6 +51,7 @@ io.on('connection', client => {
         io.to(client.id).emit('roomJoin', { room: client.room, text: "You joined the room !" }); // affichage pour le sender
         client.to(client.room).emit('userJoin', { text: client.pseudo + " joined the room !" }); // affichage pour les autres
         io.to(client.room).emit('updateListUsers', room.users);
+        io.emit('roomsInfo', ttRoom);
     });
 
     client.on('sendMessage', data => {
@@ -75,6 +78,7 @@ io.on('connection', client => {
             }
             io.to(client.room).emit('updateListUsers', roomFound.users);
         }
+        io.emit('roomsInfo', ttRoom);
     });
     // FIN PARTIE CHAT !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     // PARTIE JEU !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
