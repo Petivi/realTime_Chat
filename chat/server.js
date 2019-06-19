@@ -37,6 +37,7 @@ io.on('connection', client => {
 
     client.on('disconnect', () => {
       client.to(client.room).emit('userLeave',{ text: client.pseudo + ' left the room !'});
+      client.leave(client.room);
       var roomFound = ttRoom.find(function(tab) {
         return tab.name === client.room;  // on récupère le nom de la room
       });
