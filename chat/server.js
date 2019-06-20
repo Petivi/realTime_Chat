@@ -39,30 +39,30 @@ io.on('connection', client => {
     // PARTIE CHAT !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     client.emit('roomsInfo', ttRoom);
     client.on('connectToRoom', data => {
-      var addUserToRoom = true;
+        var addUserToRoom = true;
         client.pseudo = data.pseudo;
 
 
         let room = ttRoom.find(room => room.name === data.room)
         if (room) { //si la salle existe déjà on ajout juste le mec dedans
             let pseudoTaken = room.users.find(pseudoTaken => pseudoTaken.pseudo === client.pseudo);
-            if(pseudoTaken){
-              addUserToRoom = false;
-            }else {
-              room.users.push({ pseudo: data.pseudo, id: client.id, animateur: false });
+            if (pseudoTaken) {
+                addUserToRoom = false;
+            } else {
+                room.users.push({ pseudo: data.pseudo, id: client.id, animateur: false });
             }
         } else {
             room = { name: data.room, users: [{ pseudo: data.pseudo, id: client.id, animateur: false }] }
             ttRoom.push(room);
         }
 
-        if(addUserToRoom){
-          client.room = data.room;
-          client.join(client.room); // on rejoint / créé la room choisie
-          io.to(client.id).emit('roomJoin', { room: client.room, text: "You joined the room !" }); // affichage pour le sender
-          client.to(client.room).emit('userJoin', { text: client.pseudo + " joined the room !" }); // affichage pour les autres
-          io.to(client.room).emit('updateListUsers', room.users);
-          io.emit('roomsInfo', ttRoom);
+        if (addUserToRoom) {
+            client.room = data.room;
+            client.join(client.room); // on rejoint / créé la room choisie
+            io.to(client.id).emit('roomJoin', { room: client.room, text: "You joined the room !" }); // affichage pour le sender
+            client.to(client.room).emit('userJoin', { text: client.pseudo + " joined the room !" }); // affichage pour les autres
+            io.to(client.room).emit('updateListUsers', room.users);
+            io.emit('roomsInfo', ttRoom);
         }
     });
 
@@ -99,10 +99,17 @@ io.on('connection', client => {
     });
 
     client.on('displayReponses', (data) => {
-        io.to(client.room).emit('getReady');
-        setTimeout(() => {
-            io.to(client.room).emit('displayReponses', data);
-        }, 3200);
+        let seconde = 3;
+        io.to(client.room).emit('getReady', seconde);
+        let interval = setInterval(() => {
+            seconde--;
+            if(seconde > 0) {
+                io.to(client.room).emit('getReady', seconde);
+            } else {
+                io.to(client.room).emit('displayReponses', data);
+                clearInterval(interval);
+            }
+        }, 1000);
     });
 
     client.on('checkAnimateur', (callback) => { // cette callback permet de repondre directement a l'emit du client

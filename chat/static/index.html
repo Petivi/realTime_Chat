@@ -53,11 +53,16 @@
                             <div class="card-body">
                                 <div class="row">
                                     <div class="col">
-                                        <button id="btnDevenirAnimateur" style="display: none">
-                                            Devenir animateur
-                                        </button>
-                                        <div class="row" id="affichageQuiz">
-                                            <div class="col" style="display: none" id="affichageCompteur"></div>
+                                        <div class="row">
+                                            <div class="col">
+                                                <button id="btnDevenirAnimateur" style="display: none">
+                                                    Devenir animateur
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col" id="affichageQuiz"></div>
+                                            <div class="col-md-3" style="display: none" id="affichageCompteur"></div>
                                         </div>
                                     </div>
                                 </div>
@@ -143,9 +148,9 @@
             xhr.open('GET', 'question');
             xhr.send(null);
             xhr.addEventListener('readystatechange', function () {
-                if(xhr.readyState === 4) {
+                if (xhr.readyState === 4) {
                     let res = JSON.parse(xhr.response);
-                    if(res.response && res.response.length > 0) {
+                    if (res.response && res.response.length > 0) {
                         ttQuestion = res.response;
                     }
                 }
