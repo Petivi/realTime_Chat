@@ -65,10 +65,10 @@ io.on('connection', client => {
             io.to(client.room).emit('updateListUsers', room.users);
             io.emit('roomInfos', ttRoom);
         }
+    });
 
-        client.on('leaveRoom', data => {
-          disconnectUser();
-        });
+    client.on('leaveRoom', data => {
+      disconnectUser();
     });
 
     client.on('sendMessage', data => {
