@@ -182,13 +182,14 @@
         });
 
         function setTtUtilisateurHtml(ttUtilisateur) {
+            ttUtilisateur.sort((a, b) => {return a.score - b.score})
             listUsers.innerHTML = "";
             ttUtilisateur.forEach(function (user) {
                 var li = document.createElement('li');
                 if(user.animateur) {
                     li.innerHTML = user.pseudo + ' (Animateur)';
                 } else {
-                    li.innerHTML = user.pseudo + ' - ' + user.score;
+                    li.innerHTML = user.pseudo + ' : ' + user.score;
                 }
                 listUsers.appendChild(li);
             });
