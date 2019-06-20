@@ -52,6 +52,7 @@ socket.on('displayReponses', (question) => {
         question.reponse.forEach(function (reponse) {
             let li = document.createElement('li');
             li.classList.add('reponseList', 'clickable');
+            li.setAttribute('reponseId', reponse._id);
             li.innerHTML = reponse.text;
             listeReponse.appendChild(li);
         });
@@ -59,15 +60,22 @@ socket.on('displayReponses', (question) => {
         for (let i = 0; i < listResponseHtml.length; i++) {
             listResponseHtml[i].addEventListener('click', (e) => {
                 if (listResponseHtml[i].classList.contains('clickable')) {
+                    let reponseId = listResponseHtml[i].getAttribute('reponseId');
                     let response = e.target.textContent;
                     response = question.reponse.find(r => r.text === response);
                     socket.emit('setResponse', response.validAnswer);
                     responseTextHtml.style.display = 'flex';
                     if (response.validAnswer) {
+                      var displayResponseText = response.responseText;
+                      for(let y = 0; y<question.reponse.length; y++){
+                         if(question.reponse[y]._id === reponseId){
+                           displayResponseText = question.reponse[y].responseText;
+                         }
+                      }
                         listResponseHtml[i].classList.add('validAnswer');
                         responseTextHtml.innerHTML = `
                         <div class="col">
-                            <div class="alert alert-success">`+ response.responseText + `</div>
+                            <div class="alert alert-success">`+ displayResponseText + `</div>
                         </div>
                         `;
                     } else {
@@ -157,4 +165,3 @@ function getTextAnimateur() {
     texte += `</div></div>`;
     return texte;
 }
-
