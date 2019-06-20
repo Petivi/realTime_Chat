@@ -11,6 +11,9 @@ var app = express();
 app.use(express.static('static'));
 app.use(bodyParser.json());
 
+// var server = app.listen(3000, '25.64.228.167', () => {
+//     console.log('serveur ecoutant sur le port 3000...')
+// });
 var server = app.listen(3000, () => {
     console.log('serveur ecoutant sur le port 3000...')
 });
@@ -36,21 +39,31 @@ io.on('connection', client => {
     // PARTIE CHAT !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     client.emit('roomsInfo', ttRoom);
     client.on('connectToRoom', data => {
+      var addUserToRoom = true;
         client.pseudo = data.pseudo;
-        client.room = data.room;
+
+
         let room = ttRoom.find(room => room.name === data.room)
         if (room) { //si la salle existe déjà on ajout juste le mec dedans
-            room.users.push({ pseudo: data.pseudo, id: client.id, animateur: false });
+            let pseudoTaken = room.users.find(pseudoTaken => pseudoTaken.pseudo === client.pseudo);
+            if(pseudoTaken){
+              addUserToRoom = false;
+            }else {
+              room.users.push({ pseudo: data.pseudo, id: client.id, animateur: false });
+            }
         } else {
             room = { name: data.room, users: [{ pseudo: data.pseudo, id: client.id, animateur: false }] }
             ttRoom.push(room);
         }
 
-        client.join(client.room); // on rejoint / créé la room choisie
-        io.to(client.id).emit('roomJoin', { room: client.room, text: "You joined the room !" }); // affichage pour le sender
-        client.to(client.room).emit('userJoin', { text: client.pseudo + " joined the room !" }); // affichage pour les autres
-        io.to(client.room).emit('updateListUsers', room.users);
-        io.emit('roomsInfo', ttRoom);
+        if(addUserToRoom){
+          client.room = data.room;
+          client.join(client.room); // on rejoint / créé la room choisie
+          io.to(client.id).emit('roomJoin', { room: client.room, text: "You joined the room !" }); // affichage pour le sender
+          client.to(client.room).emit('userJoin', { text: client.pseudo + " joined the room !" }); // affichage pour les autres
+          io.to(client.room).emit('updateListUsers', room.users);
+          io.emit('roomsInfo', ttRoom);
+        }
     });
 
     client.on('sendMessage', data => {
@@ -66,7 +79,6 @@ io.on('connection', client => {
         });
 
 
-        console.log(roomFound);
         if (typeof roomFound !== 'undefined') {
             var roomUsersToDelete = roomFound.users.find(function (tabUsers) {
                 return tabUsers.id === client.id; // on récupère le nom du user à delete

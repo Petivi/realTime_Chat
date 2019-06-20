@@ -49,6 +49,12 @@ socket.on('event', (data) => {
 });
 
 socket.on('roomJoin', (data) => {
+    utilisateur.pseudo = pseudo.value;
+    utilisateur.room = room.value;
+    setQpcMenu();
+    divInfosRooms.style.display = 'none';
+    divInfosUser.style.display = 'none';
+    contentMessage.style.display = 'block';
     roomNameTitle.innerHTML = '<strong> Room Name : ' + data.room + '</strong>'; // affichage nom room
     displayInfoRoom(data);
 });
@@ -79,12 +85,6 @@ function connectToRoom() {
         pseudo: pseudo.value,
         room: room.value
     });
-    utilisateur.pseudo = pseudo.value;
-    utilisateur.room = room.value;
-    setQpcMenu();
-    divInfosRooms.style.display = 'none';
-    divInfosUser.style.display = 'none';
-    contentMessage.style.display = 'block';
 }
 
 function sendMessage() {
