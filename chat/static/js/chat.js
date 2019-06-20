@@ -55,6 +55,7 @@ message.addEventListener('keyup', (e) => { // laisser keyup pour eviter que la z
 socket.on('roomLeft', () => {
   utilisateur.room = "";
   roomClicked = "";
+  affichage.innerHTML = "";
   setQpcMenu();
   divInfosRooms.style.display = 'block';
   divInfosUser.style.display = 'block';
