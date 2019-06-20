@@ -1,6 +1,7 @@
 
 affichageQuiz = document.getElementById('affichageQuiz');
 affichageCompteur = document.getElementById('affichageCompteur');
+var listeReponse, responseTextHtml, listResponseHtml;
 
 btnDevenirAnimateur.addEventListener('click', () => {
     socket.emit('setNewAnimateur', (animateur) => {
@@ -18,7 +19,7 @@ socket.on('hideBtnDevenirAnimateur', () => {
 
 socket.on('getReady', (seconde) => {
     affichageCompteur.style.display = 'block';
-    affichageCompteur.innerHTML = seconde;    
+    affichageCompteur.innerHTML = seconde;
 });
 
 socket.on('displayReponses', (question) => {
@@ -42,30 +43,44 @@ socket.on('displayReponses', (question) => {
                     </ul>
                 </div>
             </div>
+            <div class="row" id="responseTextHtml" style="display: 'none';">
+            </div>
         </div>
         `;
-        let listeReponse = document.getElementById('listeReponse');
+        listeReponse = document.getElementById('listeReponse');
+        responseTextHtml = document.getElementById('responseTextHtml');
         question.reponse.forEach(function (reponse) {
             let li = document.createElement('li');
             li.classList.add('reponseList', 'clickable');
             li.innerHTML = reponse.text;
             listeReponse.appendChild(li);
         });
-        let listResponseHtml = document.getElementsByClassName('reponseList');
+        listResponseHtml = document.getElementsByClassName('reponseList');
         for (let i = 0; i < listResponseHtml.length; i++) {
             listResponseHtml[i].addEventListener('click', (e) => {
                 if (listResponseHtml[i].classList.contains('clickable')) {
                     let response = e.target.textContent;
                     response = question.reponse.find(r => r.text === response);
+                    socket.emit('setResponse', {question: question, reponse: response});
+                    responseTextHtml.style.display = 'flex';
                     if (response.validAnswer) {
                         listResponseHtml[i].classList.add('validAnswer');
+                        responseTextHtml.innerHTML = `
+                        <div class="col">
+                            <div class="alert alert-success">`+ response.responseText + `</div>
+                        </div>
+                        `;
                     } else {
                         listResponseHtml[i].classList.add('wrongAnswer');
+                        responseTextHtml.innerHTML = `
+                        <div class="col">
+                            <div class="alert alert-danger">`+ response.responseText + `</div>
+                        </div>
+                        `;
                     }
                     let bonneReponse = question.reponse.find(r => r.validAnswer);
                     for (let i = 0; i < listResponseHtml.length; i++) {
                         listResponseHtml[i].classList.remove('clickable');
-                        listResponseHtml[i].removeEventListener('click', () => { });
                         if (listResponseHtml[i].innerHTML === bonneReponse.text) {
                             listResponseHtml[i].classList.add('validAnswer')
                         }
@@ -73,6 +88,17 @@ socket.on('displayReponses', (question) => {
                 }
             });
         };
+    }
+});
+
+socket.on('tempsReponse', (seconde) => {
+    affichageCompteur.style.display = 'block';
+    affichageCompteur.innerHTML = seconde;
+});
+
+socket.on('finReponse', () => {
+    for (let i = 0; i < listResponseHtml.length; i++) {
+        listResponseHtml[i].classList.remove('clickable');
     }
 });
 
