@@ -11,6 +11,7 @@ var btnSendMsg = document.getElementById('btn-send-msg');
 var btnLeave = document.getElementById('btnLeave');
 var classSender = "";
 var listRooms = document.getElementById('listRooms');
+var roomClicked = "";
 
 
 btnValiderConnection.addEventListener('click', (e) => {
@@ -69,15 +70,16 @@ socket.on('userLeave', (data) => {
 
 socket.on('roomsInfo', (data) => {
     listRooms.innerHTML = "";
-    data.forEach(function (tab) {
+    data.forEach(function(tab) {
         var li = document.createElement('li');
-        li.innerHTML = '<a href="#" id="' + tab.name + '">' + tab.name + " (" + tab.users.length + ")" + '</a>';
+        li.innerHTML = '<span id="'+tab.name+'">'+tab.name + " (" + tab.users.length + ")"+'</span>';
         listRooms.appendChild(li);
 
-        var roomId = document.getElementById(tab.name);
-        roomId.addEventListener('click', (e) => {
-            if (pseudo.value != "") {
-                connectToRoom(pseudo.value, roomId.id);
+        var roomClickable = document.getElementById(tab.name);
+        roomClickable.addEventListener('click', (e) => {
+            roomClicked = roomClickable.id
+            if(pseudo.value != ""){
+              connectToRoom(pseudo.value, roomClicked);
             }
         });
     });

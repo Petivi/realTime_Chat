@@ -185,7 +185,7 @@
         });
 
         function setQpcMenu() {
-            if (utilisateur.room) {
+            if (utilisateur.room || roomClicked) {
                 qpcMenu.parentElement.style.display = 'list-item';
             } else {
                 qpcMenu.parentElement.style.display = 'none';
