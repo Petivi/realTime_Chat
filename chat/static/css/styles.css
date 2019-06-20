@@ -22,13 +22,27 @@
     color: rgb(78, 78, 255);
 }
 
-.questionSelectable {
-    padding: 7px;
-}
-
-.questionSelectable:hover {
+.reponseList.clickable:hover {
     border: 1px solid rgba(70, 70, 70, 0.712);
     box-shadow: -4px 4px 6px 0px rgba(0,0,0,0.89);
+}
+
+.reponseList {
+    border-bottom: 1px solid rgba(148, 148, 148, 0.733);
+    padding: 5px;
+    list-style: none;
+}
+
+.reponseList:last-child {
+    border-bottom: none;
+}
+
+.reponseList.validAnswer {
+    background-color: rgba(3, 182, 3, 0.61);
+}
+
+.reponseList.wrongAnswer {
+    background-color: rgba(235, 3, 3, 0.61);
 }
 
 .colorSender {

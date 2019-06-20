@@ -11,7 +11,7 @@ var app = express();
 app.use(express.static('static'));
 app.use(bodyParser.json());
 
-var server = app.listen(3000, '25.64.228.167', () => {
+var server = app.listen(3000, () => {
     console.log('serveur ecoutant sur le port 3000...')
 });
 var io = socketio(server);
@@ -24,13 +24,13 @@ mongoose.connect(
         useNewUrlParser: true,
         useFindAndModify: false
     }).then(res => {
-    console.log('MongoDB connected');
+        console.log('MongoDB connected');
 
-    questionRoutes(app);
-    getQuestions().then(res => {
-        quizzQuestions = res;
+        questionRoutes(app);
+        getQuestions().then(res => {
+            quizzQuestions = res;
+        });
     });
-});
 
 io.on('connection', client => {
     // PARTIE CHAT !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -87,7 +87,10 @@ io.on('connection', client => {
     });
 
     client.on('displayReponses', (data) => {
-        io.to(client.room).emit('displayReponses', data);
+        io.to(client.room).emit('getReady');
+        setTimeout(() => {
+            io.to(client.room).emit('displayReponses', data);
+        }, 3200);
     });
 
     client.on('checkAnimateur', (callback) => { // cette callback permet de repondre directement a l'emit du client
