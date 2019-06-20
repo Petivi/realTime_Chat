@@ -85,8 +85,12 @@ io.on('connection', client => {
     client.on('hideBtnDevenirAnimateur', () => {
         io.to(client.room).emit('hideBtnDevenirAnimateur');
     });
-    
-    client.on('checkAnimateur', (callback) => { // cette callback permet de repondre directement a l'emit du client 
+
+    client.on('displayReponses', (data) => {
+        io.to(client.room).emit('displayReponses', data);
+    });
+
+    client.on('checkAnimateur', (callback) => { // cette callback permet de repondre directement a l'emit du client
         let room = ttRoom.find(room => room.name === client.room);
         if (room.users.find(u => u.animateur)) {
             callback(true);
@@ -94,7 +98,7 @@ io.on('connection', client => {
             callback(false);
         }
     });
-    
+
     client.on('setNewAnimateur', (callback) => {
         let room = ttRoom.find(room => room.name === client.room);
         if (!room.users.find(u => u.animateur)) {

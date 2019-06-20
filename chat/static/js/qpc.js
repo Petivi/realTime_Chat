@@ -16,14 +16,15 @@ socket.on('hideBtnDevenirAnimateur', () => {
 });
 
 socket.on('displayReponses', (ttReponse) => {
-  console.log('on');
   affichageQuiz.innerHTML += `
-  <div class="row">
-      <div>`;
-      ttReponse.forEach(function(reponse) {
-          console.log(reponse);
-      });
-    affichageQuiz.innerHTML += `</div>
+  <div class="col">
+    <div class="row">
+        <div>`;
+        ttReponse.forEach(function(reponse) {
+            affichageQuiz.innerHTML += `<input type="checkbox" name="question_answers" value="`+reponse._id+`">`+reponse.text+`<br>`;
+        });
+      affichageQuiz.innerHTML += `</div>
+    </div>
   </div>
   `;
 });
@@ -44,7 +45,6 @@ function setQuizzAffichage() {
                       break;
                     }
                   }
-                  console.log('emit');
                   socket.emit('displayReponses', quizzReponses);
                 }
             });
