@@ -11,12 +11,12 @@ var app = express();
 app.use(express.static('static'));
 app.use(bodyParser.json());
 
-// var server = app.listen(3000, '25.64.228.167', () => {
-//     console.log('serveur ecoutant sur le port 3000...')
-// });
-var server = app.listen(3000, () => {
+var server = app.listen(3000, '25.64.228.167', () => {
     console.log('serveur ecoutant sur le port 3000...')
 });
+/* var server = app.listen(3000, () => {
+    console.log('serveur ecoutant sur le port 3000...')
+}); */
 var io = socketio(server);
 var ttRoom = [];
 var quizzQuestions = [];
@@ -44,15 +44,16 @@ io.on('connection', client => {
 
 
         let room = ttRoom.find(room => room.name === data.room)
+        let newUser = { pseudo: data.pseudo, id: client.id, animateur: false, score: 0 };
         if (room) { //si la salle existe déjà on ajout juste le mec dedans
             let pseudoTaken = room.users.find(pseudoTaken => pseudoTaken.pseudo === client.pseudo);
             if (pseudoTaken) {
                 addUserToRoom = false;
             } else {
-                room.users.push({ pseudo: data.pseudo, id: client.id, animateur: false });
+                room.users.push(newUser);
             }
         } else {
-            room = { name: data.room, users: [{ pseudo: data.pseudo, id: client.id, animateur: false }] }
+            room = { name: data.room, firstResponse: true, users: [newUser] }
             ttRoom.push(room);
         }
 
@@ -103,20 +104,21 @@ io.on('connection', client => {
         io.to(client.room).emit('getReady', seconde);
         let getReadyInterval = setInterval(() => {
             seconde--;
-            if(seconde > 0) {
+            if (seconde > 0) {
                 io.to(client.room).emit('getReady', seconde);
             } else {
                 io.to(client.room).emit('displayReponses', data);
                 clearInterval(getReadyInterval);
-                seconde = 30;
+                seconde = 20;
                 io.to(client.room).emit('tempsReponse', seconde);
                 let tempsReponseInterval = setInterval(() => {
                     seconde--;
-                    if(seconde > 0) {
+                    if (seconde > 0) {
                         io.to(client.room).emit('tempsReponse', seconde); // on renvoit juste le temps qui defile
                     } else {
                         clearInterval(tempsReponseInterval);
-                        io.to(client.room).emit('finReponse'); 
+                        let room = ttRoom.find(r => r.name === client.room);
+                        io.to(client.room).emit('finReponse', room.users);
                     }
                 }, 1000);
             }
@@ -125,10 +127,12 @@ io.on('connection', client => {
 
     client.on('checkAnimateur', (callback) => { // cette callback permet de repondre directement a l'emit du client
         let room = ttRoom.find(room => room.name === client.room);
-        if (room.users.find(u => u.animateur)) {
-            callback(true);
-        } else {
-            callback(false);
+        if(room) {
+            if (room.users.find(u => u.animateur)) {
+                callback(true);
+            } else {
+                callback(false);
+            }
         }
     });
 
@@ -137,14 +141,29 @@ io.on('connection', client => {
         if (!room.users.find(u => u.animateur)) {
             let user = room.users.find(u => u.id === client.id);
             user.animateur = true;
-            io.emit('updateListUsers', room.users);
+            io.to(client.room).emit('updateListUsers', room.users);
             callback(true) //on renvoi a l'utilisateur qu'il est bien animateur
         }
         callback(false);
     });
 
-    client.on('setResponse', data => {
-        console.log(data)
+    client.on('setResponse', bonneReponse => {
+        let room = ttRoom.find(r => r.name === client.room);
+        if (room) {
+            let user = room.users.find(u => u.id === client.id);
+            if (user) {
+                if (bonneReponse) {
+                    if (room.firstResponse) {
+                        room.firstResponse = false;
+                        user.score += 3;
+                    } else {
+                        user.score += 2
+                    }
+                } else {
+                    user.score--;
+                }
+            }
+        }
     });
 
 

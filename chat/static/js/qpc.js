@@ -61,7 +61,7 @@ socket.on('displayReponses', (question) => {
                 if (listResponseHtml[i].classList.contains('clickable')) {
                     let response = e.target.textContent;
                     response = question.reponse.find(r => r.text === response);
-                    socket.emit('setResponse', {question: question, reponse: response});
+                    socket.emit('setResponse', response.validAnswer);
                     responseTextHtml.style.display = 'flex';
                     if (response.validAnswer) {
                         listResponseHtml[i].classList.add('validAnswer');
@@ -96,11 +96,28 @@ socket.on('tempsReponse', (seconde) => {
     affichageCompteur.innerHTML = seconde;
 });
 
-socket.on('finReponse', () => {
-    for (let i = 0; i < listResponseHtml.length; i++) {
-        listResponseHtml[i].classList.remove('clickable');
+socket.on('finReponse', (ttUser) => {
+    console.log(ttUser)
+    if (listResponseHtml) {
+        for (let i = 0; i < listResponseHtml.length; i++) {
+            listResponseHtml[i].classList.remove('clickable');
+            affichageCompteur.innerHTML = 'Fin !';
+        }
+    }
+    console.log(affichageQuiz.innerHTML);
+    if (utilisateur.animateur) {
+        affichageQuiz.innerHTML = affichageQuiz.innerHTML.slice(0, -6);
+        affichageQuiz.innerHTML += setTtUtilisateurHtml(ttUser);
+        affichageQuiz.innerHTML += '</div>';
+    } else {
+        affichageQuiz.innerHTML = `
+        <div class="row">
+            <div class="col">En attente de la prochaine question</div>
+        </div>`;
+        affichageQuiz.innerHTML += setTtUtilisateurHtml(ttUser);
     }
 });
+
 
 function setQuizzAffichage() {
     if (utilisateur.animateur) {

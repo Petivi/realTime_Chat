@@ -178,13 +178,21 @@
         });
 
         socket.on('updateListUsers', (ttUtilisateur) => {
+            setTtUtilisateurHtml(ttUtilisateur)
+        });
+
+        function setTtUtilisateurHtml(ttUtilisateur) {
             listUsers.innerHTML = "";
             ttUtilisateur.forEach(function (user) {
                 var li = document.createElement('li');
-                li.innerHTML = (user.animateur ? (user.pseudo + ' (Animateur)') : user.pseudo);
+                if(user.animateur) {
+                    li.innerHTML = user.pseudo + ' (Animateur)';
+                } else {
+                    li.innerHTML = user.pseudo + ' - ' + user.score;
+                }
                 listUsers.appendChild(li);
             });
-        });
+        }
 
         function setQpcMenu() {
             if (utilisateur.room || roomClicked) {
