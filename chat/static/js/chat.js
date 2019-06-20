@@ -15,19 +15,19 @@ var listRooms = document.getElementById('listRooms');
 
 btnValiderConnection.addEventListener('click', (e) => {
     if (pseudo.value != "" && room.value != "") {
-        connectToRoom();
+        connectToRoom(pseudo.value, room.value);
     }
 });
 
 room.addEventListener('keyup', (e) => {
     if (e.keyCode === 13 && pseudo.value != "" && room.value != "") {
-        connectToRoom();
+        connectToRoom(pseudo.value, room.value);
     }
 });
 
 pseudo.addEventListener('keyup', (e) => {
     if (e.keyCode === 13 && pseudo.value != "" && room.value != "") {
-        connectToRoom();
+        connectToRoom(pseudo.value, room.value);
     }
 });
 
@@ -71,8 +71,15 @@ socket.on('roomsInfo', (data) => {
     listRooms.innerHTML = "";
     data.forEach(function(tab) {
         var li = document.createElement('li');
-        li.innerHTML = tab.name + " (" + tab.users.length + ")";
+        li.innerHTML = '<a href="#" id="'+tab.name+'">'+tab.name + " (" + tab.users.length + ")"+'</a>';
         listRooms.appendChild(li);
+
+        var roomId = document.getElementById(tab.name);
+        roomId.addEventListener('click', (e) => {
+            if(pseudo.value != ""){
+              connectToRoom(pseudo.value, roomId.id);
+            }
+        });
     });
 });
 
@@ -80,10 +87,10 @@ function displayInfoRoom(data) {
     affichage.innerHTML += '<br><strong>' + data.text + '</strong>'; // affichage user join room
 }
 
-function connectToRoom() {
+function connectToRoom(pseudo, room) {
     socket.emit('connectToRoom', {
-        pseudo: pseudo.value,
-        room: room.value
+        pseudo: pseudo,
+        room: room
     });
 }
 
