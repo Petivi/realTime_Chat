@@ -87,13 +87,24 @@ io.on('connection', client => {
     client.on('displayReponses', (data) => {
         let seconde = 3;
         io.to(client.room).emit('getReady', seconde);
-        let interval = setInterval(() => {
+        let getReadyInterval = setInterval(() => {
             seconde--;
             if(seconde > 0) {
                 io.to(client.room).emit('getReady', seconde);
             } else {
                 io.to(client.room).emit('displayReponses', data);
-                clearInterval(interval);
+                clearInterval(getReadyInterval);
+                seconde = 30;
+                io.to(client.room).emit('tempsReponse', seconde);
+                let tempsReponseInterval = setInterval(() => {
+                    seconde--;
+                    if(seconde > 0) {
+                        io.to(client.room).emit('tempsReponse', seconde); // on renvoit juste le temps qui defile
+                    } else {
+                        clearInterval(tempsReponseInterval);
+                        io.to(client.room).emit('finReponse'); 
+                    }
+                }, 1000);
             }
         }, 1000);
     });
@@ -116,6 +127,10 @@ io.on('connection', client => {
             callback(true) //on renvoi a l'utilisateur qu'il est bien animateur
         }
         callback(false);
+    });
+
+    client.on('setResponse', data => {
+        console.log(data)
     });
 
 

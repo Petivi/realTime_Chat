@@ -164,6 +164,8 @@
                     btnDevenirAnimateur.style.display = 'inline-block';
                 } else {
                     btnDevenirAnimateur.style.display = 'none';
+                    let affQuizz = document.getElementById('affichageQuiz');
+                    affQuizz.innerHTML = `<div class="col">En attente de la prochaine question</div>`;
                 }
             });
         });
