@@ -11,12 +11,12 @@ var app = express();
 app.use(express.static('static'));
 app.use(bodyParser.json());
 
-var server = app.listen(3000, '25.64.228.167', () => {
+// var server = app.listen(3000, '25.64.228.167', () => {
+//     console.log('serveur ecoutant sur le port 3000...')
+// });
+ var server = app.listen(3000, () => {
     console.log('serveur ecoutant sur le port 3000...')
 });
-/* var server = app.listen(3000, () => {
-    console.log('serveur ecoutant sur le port 3000...')
-}); */
 var io = socketio(server);
 var ttRoom = [];
 var quizzQuestions = [];

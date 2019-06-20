@@ -66,3 +66,12 @@
     outline: none;
     border-bottom: 2px solid rgb(255, 11, 11);
 }
+
+.roomJoinable{
+  text-decoration: underline;
+}
+
+.roomJoinable:hover{
+  color: #28ff4b;
+  font-weight: bold;
+}

@@ -89,7 +89,7 @@ socket.on('roomInfos', (data) => {
     listRooms.innerHTML = "";
     data.forEach(function(tab) {
         var li = document.createElement('li');
-        li.innerHTML = '<span id="'+tab.name+'">'+tab.name + " (" + tab.users.length + ")"+'</span>';
+        li.innerHTML = '<span class="clickable roomJoinable" id="'+tab.name+'">'+tab.name + " (" + tab.users.length + ")"+'</span>';
         listRooms.appendChild(li);
 
         var roomClickable = document.getElementById(tab.name);
