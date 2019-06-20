@@ -15,18 +15,34 @@ socket.on('hideBtnDevenirAnimateur', () => {
     setQuizzAffichage();
 });
 
-socket.on('displayReponses', (ttReponse) => {
-  affichageQuiz.innerHTML += `
-  <div class="col">
-    <div class="row">
-        <div>`;
-        ttReponse.forEach(function(reponse) {
-            affichageQuiz.innerHTML += `<input type="checkbox" name="question_answers" value="`+reponse._id+`">`+reponse.text+`<br>`;
+socket.on('displayReponses', (question) => {
+    console.log(question)
+    if (utilisateur.animateur) {
+
+    } else {
+        affichageQuiz.innerHTML = `
+        <div class="row">
+            <div class="col">
+                <h5>Question !!!</h5>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <strong>`+ question.question + `</strong>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <ul>`;
+        ttReponse.forEach(function (reponse) {
+            affichageQuiz.innerHTML += `<li class="reponse">` + reponse.text + `<li>`;
         });
-      affichageQuiz.innerHTML += `</div>
-    </div>
-  </div>
-  `;
+        affichageQuiz.innerHTML += `
+                </ul>
+            </div>
+        </div>
+        `;
+    }
 });
 
 function setQuizzAffichage() {
@@ -35,17 +51,12 @@ function setQuizzAffichage() {
             affichageQuiz.innerHTML = getTextAnimateur();
 
             let sendQuestion = document.getElementById('sendQuestion');
+            let listQuestionsAnimateur = document.getElementById('listQuestionsAnimateur');
             sendQuestion.addEventListener('click', () => {
                 let id_question = listQuestionsAnimateur.value;
-                if(id_question != 0){
-                  let quizzReponses = [];
-                  for(var i = 0; i<ttQuestion.length; i++){
-                    if(ttQuestion[i]._id === id_question){
-                      quizzReponses = ttQuestion[i].reponse;
-                      break;
-                    }
-                  }
-                  socket.emit('displayReponses', quizzReponses);
+                if (id_question != 0) {
+                    let question = ttQuestion.find(q => q._id === id_question);
+                    socket.emit('displayReponses', question);
                 }
             });
 
@@ -56,7 +67,7 @@ function setQuizzAffichage() {
         }
     } else {
         affichageQuiz.innerHTML = `
-        <div class="col">Je suis une pute bande d'animateur</div>
+        <div class="col">En attente de la prochaine question</div>
         `;
     }
 }
@@ -64,63 +75,18 @@ function setQuizzAffichage() {
 function getTextAnimateur() {
     let texte = `
     <div class="col">
-        <div class="row">
-            <div class="col">
-                <h5>Choisissez les questions que vous voulez utiliser pour la partie</h5>
-            </div>
-        </div>
         <div class="row mt-2">
             <div class="col">
               <select id="listQuestionsAnimateur">
                 <option disabled selected value="0" >Choix de la question</option>`;
-                  ttQuestion.forEach(q => {
-                    texte += `<option value="`+q._id+`" >`+q.question+`</option>`;
-                  });
+    ttQuestion.forEach(q => {
+        texte += `<option value="` + q._id + `" >` + q.question + `</option>`;
+    });
 
-                texte += `</select>
+    texte += `</select>
                 <button id="sendQuestion" type="button" name="button">Poser la question</button>
                 `;
-
-    // ttQuestion.forEach(q => {
-    //     texte += `
-    //     <div class="questionSelectable clickable">
-    //         <div class="row">
-    //             <div class="col">
-    //                 `+ q.question + `
-    //             </div>
-    //         </div>`+
-    //         /* <div class="row"> //partie réponse ça me fait mal de devoir l'enlever x)
-    //             <div class="col">
-    //                 `+ getResponseTable(q) + `
-    //             </div>
-    //         </div> */
-    //     `</div>`;
-    // });
-
     texte += `</div></div>`;
-
     return texte;
 }
 
-function getResponseTable(question) {
-    let texte = `<ul>`;
-    question.reponse.forEach(r => {
-        texte += `
-        <li>
-            <div class="row">
-                <div class="col-md-7">
-                    <strong>Réponse : </strong>` + r.text +
-                `</div>` +
-            /*  `<div class="col">
-                    <strong>Texte si choisie : </strong>` + r.responseText +
-                </div>
-            */
-                `<div class="col">
-                    <strong>Bonne réponse : </strong>` + (r.validAnswer ? 'oui' : 'non') + `
-                </div>
-            </div>
-        </li>`;
-    });
-    texte += `</ul>`;
-    return texte;
-}
