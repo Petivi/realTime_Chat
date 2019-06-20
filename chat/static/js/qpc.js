@@ -18,7 +18,7 @@ socket.on('hideBtnDevenirAnimateur', () => {
 
 socket.on('getReady', (seconde) => {
     affichageCompteur.style.display = 'block';
-    affichageCompteur.innerHTML = seconde;
+    affichageCompteur.innerHTML = seconde;    
 });
 
 socket.on('displayReponses', (question) => {
@@ -54,31 +54,27 @@ socket.on('displayReponses', (question) => {
         let listResponseHtml = document.getElementsByClassName('reponseList');
         for (let i = 0; i < listResponseHtml.length; i++) {
             listResponseHtml[i].addEventListener('click', (e) => {
-                setResponse(e, listResponseHtml[i], listResponseHtml);
+                if (listResponseHtml[i].classList.contains('clickable')) {
+                    let response = e.target.textContent;
+                    response = question.reponse.find(r => r.text === response);
+                    if (response.validAnswer) {
+                        listResponseHtml[i].classList.add('validAnswer');
+                    } else {
+                        listResponseHtml[i].classList.add('wrongAnswer');
+                    }
+                    let bonneReponse = question.reponse.find(r => r.validAnswer);
+                    for (let i = 0; i < listResponseHtml.length; i++) {
+                        listResponseHtml[i].classList.remove('clickable');
+                        listResponseHtml[i].removeEventListener('click', () => { });
+                        if (listResponseHtml[i].innerHTML === bonneReponse.text) {
+                            listResponseHtml[i].classList.add('validAnswer')
+                        }
+                    }
+                }
             });
         };
     }
 });
-
-function setResponse(e, liReponse, ttLiReponse) {
-    if (liReponse.classList.contains('clickable')) {
-        let response = e.target.textContent;
-        response = question.reponse.find(r => r.text === response);
-        if (response.validAnswer) {
-            liReponse.classList.add('validAnswer');
-        } else {
-            liReponse.classList.add('wrongAnswer');
-        }
-        let bonneReponse = question.reponse.find(r => r.validAnswer);
-        for (let i = 0; i < ttLiReponse.length; i++) {
-            liReponse.classList.remove('clickable');
-            liReponse.removeEventListener('click', () => { });
-            if (liReponse.innerHTML === bonneReponse.text) {
-                liReponse.classList.add('validAnswer')
-            }
-        }
-    }
-}
 
 function setQuizzAffichage() {
     if (utilisateur.animateur) {

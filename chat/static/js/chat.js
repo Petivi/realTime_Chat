@@ -69,15 +69,15 @@ socket.on('userLeave', (data) => {
 
 socket.on('roomsInfo', (data) => {
     listRooms.innerHTML = "";
-    data.forEach(function(tab) {
+    data.forEach(function (tab) {
         var li = document.createElement('li');
-        li.innerHTML = '<a href="#" id="'+tab.name+'">'+tab.name + " (" + tab.users.length + ")"+'</a>';
+        li.innerHTML = '<a href="#" id="' + tab.name + '">' + tab.name + " (" + tab.users.length + ")" + '</a>';
         listRooms.appendChild(li);
 
         var roomId = document.getElementById(tab.name);
         roomId.addEventListener('click', (e) => {
-            if(pseudo.value != ""){
-              connectToRoom(pseudo.value, roomId.id);
+            if (pseudo.value != "") {
+                connectToRoom(pseudo.value, roomId.id);
             }
         });
     });
