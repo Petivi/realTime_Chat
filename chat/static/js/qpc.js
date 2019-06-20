@@ -15,10 +15,40 @@ socket.on('hideBtnDevenirAnimateur', () => {
     setQuizzAffichage();
 });
 
+socket.on('displayReponses', (ttReponse) => {
+  console.log('on');
+  affichageQuiz.innerHTML += `
+  <div class="row">
+      <div>`;
+      ttReponse.forEach(function(reponse) {
+          console.log(reponse);
+      });
+    affichageQuiz.innerHTML += `</div>
+  </div>
+  `;
+});
+
 function setQuizzAffichage() {
     if (utilisateur.animateur) {
         if (ttQuestion.length > 0) {
             affichageQuiz.innerHTML = getTextAnimateur();
+
+            let sendQuestion = document.getElementById('sendQuestion');
+            sendQuestion.addEventListener('click', () => {
+                let id_question = listQuestionsAnimateur.value;
+                if(id_question != 0){
+                  let quizzReponses = [];
+                  for(var i = 0; i<ttQuestion.length; i++){
+                    if(ttQuestion[i]._id === id_question){
+                      quizzReponses = ttQuestion[i].reponse;
+                      break;
+                    }
+                  }
+                  console.log('emit');
+                  socket.emit('displayReponses', quizzReponses);
+                }
+            });
+
         } else {
             affichageQuiz.innerHTML = `
             <div class="col">Il n'y a pas de questions, voir plus tard pour pouvoir en créer</div>
@@ -47,7 +77,9 @@ function getTextAnimateur() {
                     texte += `<option value="`+q._id+`" >`+q.question+`</option>`;
                   });
 
-                texte += `</select>`;
+                texte += `</select>
+                <button id="sendQuestion" type="button" name="button">Poser la question</button>
+                `;
 
     // ttQuestion.forEach(q => {
     //     texte += `
@@ -66,6 +98,7 @@ function getTextAnimateur() {
     // });
 
     texte += `</div></div>`;
+
     return texte;
 }
 
