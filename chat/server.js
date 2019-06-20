@@ -173,8 +173,12 @@ io.on('connection', client => {
               }
           }
           io.to(client.room).emit('updateListUsers', roomFound.users);
+          if(roomFound.users.length === 0){
+            var removeIndex = ttRoom.map(function(checkRoom) { return checkRoom.name; }).indexOf(roomFound.name);
+            ttRoom.splice(removeIndex, 1);
+          }
+          io.emit('roomInfos', ttRoom);
       }
-      io.emit('roomInfos', ttRoom);
       io.to(client.id).emit('roomLeft',);
       io.to(client.id).emit('updateListUsers', []);
     }
