@@ -37,7 +37,7 @@ mongoose.connect(
 
 io.on('connection', client => {
     // PARTIE CHAT !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    client.emit('roomsInfo', ttRoom);
+    client.emit('roomInfos', ttRoom);
     client.on('connectToRoom', data => {
         var addUserToRoom = true;
         client.pseudo = data.pseudo;
@@ -62,8 +62,12 @@ io.on('connection', client => {
             io.to(client.id).emit('roomJoin', { room: client.room, text: "You joined the room !" }); // affichage pour le sender
             client.to(client.room).emit('userJoin', { text: client.pseudo + " joined the room !" }); // affichage pour les autres
             io.to(client.room).emit('updateListUsers', room.users);
-            io.emit('roomsInfo', ttRoom);
+            io.emit('roomInfos', ttRoom);
         }
+
+        client.on('leaveRoom', data => {
+          disconnectUser();
+        });
     });
 
     client.on('sendMessage', data => {
@@ -72,25 +76,7 @@ io.on('connection', client => {
     });
 
     client.on('disconnect', () => {
-        client.to(client.room).emit('userLeave', { text: client.pseudo + ' left the room !' });
-        client.leave(client.room); // Pas sur que ça marche :o
-        var roomFound = ttRoom.find(function (tab) {
-            return tab.name === client.room; // on récupère le nom de la room
-        });
-
-
-        if (typeof roomFound !== 'undefined') {
-            var roomUsersToDelete = roomFound.users.find(function (tabUsers) {
-                return tabUsers.id === client.id; // on récupère le nom du user à delete
-            });
-            for (var i = 0; i < roomFound.users.length; i++) {
-                if (roomFound.users[i] === roomUsersToDelete) { // si on trouve l'utilisateur
-                    roomFound.users.splice(i, 1); // on le supprime de la liste
-                }
-            }
-            io.to(client.room).emit('updateListUsers', roomFound.users);
-        }
-        io.emit('roomsInfo', ttRoom);
+        disconnectUser();
     });
     // FIN PARTIE CHAT !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     // PARTIE JEU !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -134,8 +120,31 @@ io.on('connection', client => {
 
 
     // FIN PARTIE JEU !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-});
 
+    function disconnectUser(){
+      client.to(client.room).emit('userLeave', { text: client.pseudo + ' left the room !' });
+      client.leave(client.room); // Pas sur que ça marche :o
+      var roomFound = ttRoom.find(function (tab) {
+          return tab.name === client.room; // on récupère le nom de la room
+      });
+
+
+      if (typeof roomFound !== 'undefined') {
+          var roomUsersToDelete = roomFound.users.find(function (tabUsers) {
+              return tabUsers.id === client.id; // on récupère le nom du user à delete
+          });
+          for (var i = 0; i < roomFound.users.length; i++) {
+              if (roomFound.users[i] === roomUsersToDelete) { // si on trouve l'utilisateur
+                  roomFound.users.splice(i, 1); // on le supprime de la liste
+              }
+          }
+          io.to(client.room).emit('updateListUsers', roomFound.users);
+      }
+      io.emit('roomInfos', ttRoom);
+      io.to(client.id).emit('roomLeft',);
+      io.to(client.id).emit('updateListUsers', []);
+    }
+});
 
 
 /*

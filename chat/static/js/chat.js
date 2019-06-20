@@ -14,6 +14,13 @@ var listRooms = document.getElementById('listRooms');
 var roomClicked = "";
 
 
+btnLeave.addEventListener('click', (e) => {
+  socket.emit('leaveRoom', {
+      pseudo: pseudo.value,
+      room: room.value
+  });
+});
+
 btnValiderConnection.addEventListener('click', (e) => {
     if (pseudo.value != "" && room.value != "") {
         connectToRoom(pseudo.value, room.value);
@@ -45,6 +52,15 @@ message.addEventListener('keyup', (e) => { // laisser keyup pour eviter que la z
     }
 });
 
+socket.on('roomLeft', () => {
+  utilisateur.room = "";
+  roomClicked = "";
+  setQpcMenu();
+  divInfosRooms.style.display = 'block';
+  divInfosUser.style.display = 'block';
+  contentMessage.style.display = 'none';
+});
+
 socket.on('event', (data) => {
     affichage.innerHTML += '<br><strong>' + data.pseudo + '</strong> : ' + data.text; // message
 });
@@ -68,7 +84,7 @@ socket.on('userLeave', (data) => {
     displayInfoRoom(data);
 });
 
-socket.on('roomsInfo', (data) => {
+socket.on('roomInfos', (data) => {
     listRooms.innerHTML = "";
     data.forEach(function(tab) {
         var li = document.createElement('li');
