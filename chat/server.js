@@ -86,6 +86,10 @@ io.on('connection', client => {
     });
 
     client.on('displayReponses', (data) => {
+        let room = ttRoom.find(r => r.name === client.room);
+        if (room) {
+          room.firstResponse = true;
+        }
         let seconde = 3;
         io.to(client.room).emit('getReady', seconde);
         let getReadyInterval = setInterval(() => {
