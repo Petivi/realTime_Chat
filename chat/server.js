@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 const questionRoutes = require('./routes/question');
 const { getQuestions } = require('./queries/question');
 const bodyParser = require('body-parser');
-
+const redis = require('./redis/redis');
 
 
 var app = express();

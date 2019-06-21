@@ -90,3 +90,17 @@
 .btnWrongAnswer {
     background-color: rgb(255, 0, 0);
 }
+
+.roomJoinable {
+    text-decoration: underline;
+    color: #28ff4b;
+    list-style-type: none;
+}
+
+.roomJoinable:hover {
+    font-weight: bold;
+}
+
+ul {
+    list-style-type: none;
+}
