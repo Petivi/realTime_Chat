@@ -6,11 +6,6 @@ const { getQuestions } = require('./queries/question');
 const bodyParser = require('body-parser');
 const redis = require('./redis/redis');
 
-// redis.redisClient.set('student', 'Oui');
-// redis.redisClient.get('student', (err, result) => {
-//   console.log(result);
-// });
-
 
 var app = express();
 app.use(express.static('static'));
