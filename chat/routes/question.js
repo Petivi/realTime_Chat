@@ -1,4 +1,7 @@
 const Question = require('./../models/question');
+const redis = require('../redis/redis');
+
+
 
 module.exports = (app) => {
     app.get('/question', (req, res) => {
@@ -8,10 +11,15 @@ module.exports = (app) => {
     });
 
     app.post('/question', (req, res) => {
-        var question = new Question(req.body.data);
-        question.save().then(result => {
+        if(req.body.data.saveDB){
+          var question = new Question(req.body.data);
+          question.save().then(result => {
             res.status(201).send({ response: 'created' });
-        });
+          });
+        }else {
+          res.status(201).send({ response: 'Not added to db'})
+        }
+
     });
 
 }
