@@ -16,7 +16,7 @@ app.use(bodyParser.json());
 // var server = app.listen(3000, '25.64.228.167', () => {
 //     console.log('serveur ecoutant sur le port 3000...')
 // });
- var server = app.listen(3000, () => {
+var server = app.listen(3000, () => {
     console.log('serveur ecoutant sur le port 3000...')
 });
 var io = socketio(server);
@@ -24,18 +24,17 @@ var ttRoom = [];
 var quizzQuestions = [];
 
 mongoose.connect(
-    'mongodb://localhost:27017/chat_db',
-    {
+    'mongodb://localhost:27017/chat_db', {
         useNewUrlParser: true,
         useFindAndModify: false
     }).then(res => {
-        console.log('MongoDB connected');
+    console.log('MongoDB connected');
 
-        questionRoutes(app);
-        getQuestions().then(res => {
-            quizzQuestions = res;
-        });
+    questionRoutes(app);
+    getQuestions().then(res => {
+        quizzQuestions = res;
     });
+});
 
 io.on('connection', client => {
     // PARTIE CHAT !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -70,7 +69,7 @@ io.on('connection', client => {
     });
 
     client.on('leaveRoom', data => {
-      disconnectUser();
+        disconnectUser();
     });
 
     client.on('sendMessage', data => {
@@ -90,7 +89,7 @@ io.on('connection', client => {
     client.on('displayReponses', (data) => {
         let room = ttRoom.find(r => r.name === client.room);
         if (room) {
-          room.firstResponse = true;
+            room.firstResponse = true;
         }
         let seconde = 3;
         io.to(client.room).emit('getReady', seconde);
@@ -119,7 +118,7 @@ io.on('connection', client => {
 
     client.on('checkAnimateur', (callback) => { // cette callback permet de repondre directement a l'emit du client
         let room = ttRoom.find(room => room.name === client.room);
-        if(room) {
+        if (room) {
             if (room.users.find(u => u.animateur)) {
                 callback(true);
             } else {
@@ -161,32 +160,32 @@ io.on('connection', client => {
 
     // FIN PARTIE JEU !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-    function disconnectUser(){
-      client.to(client.room).emit('userLeave', { text: client.pseudo + ' left the room !' });
-      client.leave(client.room); // Pas sur que ça marche :o
-      var roomFound = ttRoom.find(function (tab) {
-          return tab.name === client.room; // on récupère le nom de la room
-      });
+    function disconnectUser() {
+        client.to(client.room).emit('userLeave', { text: client.pseudo + ' left the room !' });
+        client.leave(client.room); // Pas sur que ça marche :o
+        var roomFound = ttRoom.find(function(tab) {
+            return tab.name === client.room; // on récupère le nom de la room
+        });
 
 
-      if (typeof roomFound !== 'undefined') {
-          var roomUsersToDelete = roomFound.users.find(function (tabUsers) {
-              return tabUsers.id === client.id; // on récupère le nom du user à delete
-          });
-          for (var i = 0; i < roomFound.users.length; i++) {
-              if (roomFound.users[i] === roomUsersToDelete) { // si on trouve l'utilisateur
-                  roomFound.users.splice(i, 1); // on le supprime de la liste
-              }
-          }
-          io.to(client.room).emit('updateListUsers', roomFound.users);
-          if(roomFound.users.length === 0){
-            var removeIndex = ttRoom.map(function(checkRoom) { return checkRoom.name; }).indexOf(roomFound.name);
-            ttRoom.splice(removeIndex, 1);
-          }
-          io.emit('roomInfos', ttRoom);
-      }
-      io.to(client.id).emit('roomLeft',);
-      io.to(client.id).emit('updateListUsers', []);
+        if (typeof roomFound !== 'undefined') {
+            var roomUsersToDelete = roomFound.users.find(function(tabUsers) {
+                return tabUsers.id === client.id; // on récupère le nom du user à delete
+            });
+            for (var i = 0; i < roomFound.users.length; i++) {
+                if (roomFound.users[i] === roomUsersToDelete) { // si on trouve l'utilisateur
+                    roomFound.users.splice(i, 1); // on le supprime de la liste
+                }
+            }
+            io.to(client.room).emit('updateListUsers', roomFound.users);
+            if (roomFound.users.length === 0) {
+                var removeIndex = ttRoom.map(function(checkRoom) { return checkRoom.name; }).indexOf(roomFound.name);
+                ttRoom.splice(removeIndex, 1);
+            }
+            io.emit('roomInfos', ttRoom);
+        }
+        io.to(client.id).emit('roomLeft', );
+        io.to(client.id).emit('updateListUsers', []);
     }
 });
 

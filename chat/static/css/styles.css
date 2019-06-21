@@ -24,7 +24,7 @@
 
 .reponseList.clickable:hover {
     border: 1px solid rgba(70, 70, 70, 0.712);
-    box-shadow: -4px 4px 6px 0px rgba(0,0,0,0.89);
+    box-shadow: -4px 4px 6px 0px rgba(0, 0, 0, 0.89);
 }
 
 .reponseList {
@@ -67,17 +67,40 @@
     border-bottom: 2px solid rgb(255, 11, 11);
 }
 
-.roomJoinable{
-  text-decoration: underline;
-  color: #28ff4b;
-  list-style-type: none;
+.roomJoinable {
+    text-decoration: underline;
 }
 
-.roomJoinable:hover{
-  font-weight: bold;
+.roomJoinable:hover {
+    color: #28ff4b;
+    font-weight: bold;
 }
 
+.reponseFormulaire {
+    padding: 10px;
+    margin-bottom: 2%;
+    border: 1px solid rgba(180, 180, 180, 0.651);
+    border-radius: 3px;
+}
 
-ul{
-  list-style-type: none;
+.btnValidAnswer {
+    background-color: rgb(6, 255, 6);
+}
+
+.btnWrongAnswer {
+    background-color: rgb(255, 0, 0);
+}
+
+.roomJoinable {
+    text-decoration: underline;
+    color: #28ff4b;
+    list-style-type: none;
+}
+
+.roomJoinable:hover {
+    font-weight: bold;
+}
+
+ul {
+    list-style-type: none;
 }

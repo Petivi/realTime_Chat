@@ -25,6 +25,7 @@ module.exports = (app) => {
     });
 
     app.post('/question', (req, res) => {
+        console.log(req.body)
         var data = req.body.data;
         if(data.saveDB){
           var question = new Question(data);
