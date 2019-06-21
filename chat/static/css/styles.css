@@ -69,9 +69,15 @@
 
 .roomJoinable{
   text-decoration: underline;
+  color: #28ff4b;
+  list-style-type: none;
 }
 
 .roomJoinable:hover{
-  color: #28ff4b;
   font-weight: bold;
+}
+
+
+ul{
+  list-style-type: none;
 }
