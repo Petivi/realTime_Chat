@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="css/bootstrap.css">
+    <link rel="stylesheet" href="css/styles.css">
+    <title>Document</title>
+</head>
+
+<body>
+    <div class="page">
+        <div class="row">
+            <div class="col-md-2">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Info</h3>
+                    </div>
+                    <div class="card-body">
+                        <h6 class="titreMenu">Navigation</h6>
+                        <ul class="list">
+                            <li>
+                                <span id="retourMenu" class="clickable menu">Chat</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card">
+                    <div class="card-header">
+                        <h1>Ajout de questions</h1>
+                    </div>
+                    <div class="card-body">
+                        <div class="row" id="msgError" style="display: none">
+                        </div>
+                        <div class="row mb-3">
+                            <label for="inputPseudo" class="col-md-auto">Pseudo</label>
+                            <div class="col-md-2">
+                                <input class="w-100" id="inputPseudo" type="text">
+                            </div>
+                            <label class="col-md-auto" for="inputQuestion">Question</label>
+                            <div class="col">
+                                <textarea class="w-100" id="inputQuestion" rows="2"></textarea>
+                            </div>
+                            <div class="col-md-auto">
+                                <div class="row">
+                                    <div class="col">
+                                        <input type="checkbox" id="cbSave" value="true">
+                                        <label for="cbSave">Sauvegarder en base</label>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        <button onclick="save()">Enregistrer</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="reponseFormulaire">
+                            <div class="row">
+                                <label class="col-md-auto" for="rep1">Réponse 1</label>
+                                <div class="col">
+                                    <textarea class="w-100" id="rep1" rows="2"></textarea>
+                                </div>
+                                <div class="col-md-auto">
+                                    <button id="btn1" class="btnWrongAnswer" onclick="setResponse(event, 1)">Mauvaise réponse</button>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <label class="col-md-auto" for="repTxt1">Texte réponse 1</label>
+                                <div class="col">
+                                    <textarea class="w-100" id="repTxt1" rows="2"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="reponseFormulaire">
+                            <div class="row">
+                                <label class="col-md-auto" for="rep2">Réponse 2</label>
+                                <div class="col">
+                                    <textarea class="w-100" id="rep2" rows="2"></textarea>
+                                </div>
+                                <div class="col-md-auto">
+                                    <button id="btn2" class="btnWrongAnswer" onclick="setResponse(event, 2)">Mauvaise réponse</button>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <label class="col-md-auto" for="repTxt2">Texte réponse 2</label>
+                                <div class="col">
+                                    <textarea class="w-100" id="repTxt2" rows="2"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="reponseFormulaire">
+                            <div class="row">
+                                <label class="col-md-auto" for="rep3">Réponse 3</label>
+                                <div class="col">
+                                    <textarea class="w-100" id="rep3" rows="2"></textarea>
+                                </div>
+                                <div class="col-md-auto">
+                                    <button id="btn3" class="btnWrongAnswer" onclick="setResponse(event, 3)">Mauvaise réponse</button>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <label class="col-md-auto" for="repTxt3">Texte réponse 3</label>
+                                <div class="col">
+                                    <textarea class="w-100" id="repTxt3" rows="2"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="reponseFormulaire">
+                            <div class="row">
+                                <label class="col-md-auto" for="rep4">Réponse 4</label>
+                                <div class="col">
+                                    <textarea class="w-100" id="rep4" rows="2"></textarea>
+                                </div>
+                                <div class="col-md-auto">
+                                    <button id="btn4" class="btnWrongAnswer" onclick="setResponse(event, 4)">Mauvaise réponse</button>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <label class="col-md-auto" for="repTxt4">Texte réponse 4</label>
+                                <div class="col">
+                                    <textarea class="w-100" id="repTxt4" rows="2"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+<script>
+    var retourMenu = document.getElementById('retourMenu');
+    var inputPseudo = document.getElementById('inputPseudo');
+    var inputQuestion = document.getElementById('inputQuestion');
+    var msgError = document.getElementById('msgError');
+    var cbSave = document.getElementById('cbSave');
+    var btn4 = document.getElementById('btn4');
+    var btn3 = document.getElementById('btn3');
+    var btn2 = document.getElementById('btn2');
+    var btn1 = document.getElementById('btn1');
+    var rep1 = document.getElementById('rep1');
+    var repTxt1 = document.getElementById('repTxt1');
+    var rep2 = document.getElementById('rep2');
+    var repTxt2 = document.getElementById('repTxt2');
+    var rep3 = document.getElementById('rep3');
+    var repTxt3 = document.getElementById('repTxt3');
+    var rep4 = document.getElementById('rep4');
+    var repTxt4 = document.getElementById('repTxt4');
+    var xhr = new XMLHttpRequest();
+    var ttReponse = [];
+    var newQuestion = {
+        question: '',
+        reponse: ttReponse,
+        author: '',
+        saveDB: false
+    };
+
+    retourMenu.addEventListener('click', () => {
+        window.location.href = 'index.html';
+    });
+
+    function setResponse(e, val) {
+        if (e.target.classList.contains('btnValidAnswer')) {
+            e.target.innerText = 'Mauvaise réponse';
+            e.target.classList.remove('btnValidAnswer');
+            e.target.classList.add('btnWrongAnswer');
+        } else if (e.target.classList.contains('btnWrongAnswer')) {
+            e.target.innerText = 'Bonne réponse';
+            e.target.classList.remove('btnWrongAnswer');
+            e.target.classList.add('btnValidAnswer');
+        }
+    }
+
+    function save() {
+        console.log(cbSave.checked);
+        newQuestion.author = inputPseudo.value;
+        newQuestion.question = inputQuestion.value;
+        newQuestion.saveDB = cbSave.checked;
+        newQuestion.reponse = [{
+            text: rep1.value,
+            responseText: repTxt1.value,
+            validAnswer: btn1.classList.contains('btnValidAnswer')
+        }, {
+            text: rep2.value,
+            responseText: repTxt2.value,
+            validAnswer: btn2.classList.contains('btnValidAnswer')
+        }, {
+            text: rep3.value,
+            responseText: repTxt3.value,
+            validAnswer: btn3.classList.contains('btnValidAnswer')
+        }, {
+            text: rep4.value,
+            responseText: repTxt4.value,
+            validAnswer: btn4.classList.contains('btnValidAnswer')
+        }, ];
+        xhr.open('POST', 'question', true);
+        xhr.send(JSON.stringify(newQuestion));
+    }
+
+    function setMsgError(msg) {
+        msgError.innerHTML = `
+            <div class="col">
+                <div class="alert alert-danger">` + msg + `</div> 
+            <div>`;
+    }
+</script>
+
+</html>
