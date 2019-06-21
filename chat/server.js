@@ -6,6 +6,8 @@ const { getQuestions } = require('./queries/question');
 const bodyParser = require('body-parser');
 const redis = require('./redis/redis');
 
+redis.redisClient.flushall();
+
 
 var app = express();
 app.use(express.static('static'));
