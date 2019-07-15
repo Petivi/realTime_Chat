@@ -4,7 +4,9 @@ const mongoose = require('mongoose');
 const questionRoutes = require('./routes/question');
 const { getQuestions } = require('./queries/question');
 const bodyParser = require('body-parser');
+const redis = require('./redis/redis');
 
+redis.redisClient.flushall();
 
 
 var app = express();
@@ -22,18 +24,17 @@ var ttRoom = [];
 var quizzQuestions = [];
 
 mongoose.connect(
-    'mongodb://localhost:27017/chat_db',
-    {
+    'mongodb://localhost:27017/chat_db', {
         useNewUrlParser: true,
         useFindAndModify: false
     }).then(res => {
-        console.log('MongoDB connected');
+    console.log('MongoDB connected');
 
-        questionRoutes(app);
-        getQuestions().then(res => {
-            quizzQuestions = res;
-        });
+    questionRoutes(app);
+    getQuestions().then(res => {
+        quizzQuestions = res;
     });
+});
 
 io.on('connection', client => {
     // PARTIE CHAT !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -86,6 +87,10 @@ io.on('connection', client => {
     });
 
     client.on('displayReponses', (data) => {
+        let room = ttRoom.find(r => r.name === client.room);
+        if (room) {
+            room.firstResponse = true;
+        }
         let seconde = 3;
         io.to(client.room).emit('getReady', seconde);
         let getReadyInterval = setInterval(() => {

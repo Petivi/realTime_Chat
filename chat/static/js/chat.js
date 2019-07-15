@@ -60,6 +60,9 @@ socket.on('roomLeft', () => {
   divInfosRooms.style.display = 'block';
   divInfosUser.style.display = 'block';
   contentMessage.style.display = 'none';
+  qpcMenu.parentElement.style.display = 'none';
+  vueQpc.style.display = 'none';
+  vueChat.className = "col";
 });
 
 socket.on('event', (data) => {

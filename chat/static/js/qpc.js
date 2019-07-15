@@ -105,6 +105,9 @@ socket.on('tempsReponse', (seconde) => {
 });
 
 socket.on('finReponse', (ttUser) => {
+    if(utilisateur.animateur){
+      sendQuestion.removeAttribute('disabled');
+    }
     if (listResponseHtml) {
         for (let i = 0; i < listResponseHtml.length; i++) {
             listResponseHtml[i].classList.remove('clickable');
@@ -129,6 +132,7 @@ function setQuizzAffichage() {
             let sendQuestion = document.getElementById('sendQuestion');
             let listQuestionsAnimateur = document.getElementById('listQuestionsAnimateur');
             sendQuestion.addEventListener('click', () => {
+                sendQuestion.setAttribute('disabled', true);
                 let id_question = listQuestionsAnimateur.value;
                 if (id_question != 0) {
                     let question = ttQuestion.find(q => q._id === id_question);
